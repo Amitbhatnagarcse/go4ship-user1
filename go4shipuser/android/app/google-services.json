@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "684027578904",
+    "project_id": "go4ship-user-afe08",
+    "storage_bucket": "go4ship-user-afe08.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:684027578904:android:55fe30847dc2e8c04f916d",
+        "android_client_info": {
+          "package_name": "com.go4ship.user"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "684027578904-p37fu4h1t99pcs71546t4ojg9psv9h3h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMFach7vK3YbquCKKM-kwIrCTg-OHDGU4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "684027578904-p37fu4h1t99pcs71546t4ojg9psv9h3h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
