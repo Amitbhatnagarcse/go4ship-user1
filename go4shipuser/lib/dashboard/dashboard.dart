@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../profile/myprofile.dart';
+
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -51,29 +53,61 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
 
               ListTile(
-                title: const Text('Book your delivery'),
+
+                leading: Icon(Icons.home, color: Colors.orange),
+
+                title: Text('Book your delivery'),
+
                 onTap: () {
-                  // Update the state of the app.
-                  // ...
+
+                  Navigator.pop(context); // Close the drawer
+
+                  // Add navigation logic here
                 },
               ),
+
               ListTile(
-                title: const Text('My Profile'),
+
+                leading: Icon(Icons.person, color: Colors.orange),
+
+                title: Text('My Profile'),
+
                 onTap: () {
-                  // Update the state of the app.
-                  // ...
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => MyProfile()));
+
+
+                 // Navigator.pop(context); // Close the drawer
+
+                  // Add navigation logic here
                 },
-              ), ListTile(
-                title: const Text('My Bookings'),
+              ),
+
+              ListTile(
+
+                leading: Icon(Icons.watch_later, color: Colors.orange),
+
+                title: Text('My Bookings'),
+
                 onTap: () {
-                  // Update the state of the app.
-                  // ...
+
+                  Navigator.pop(context); // Close the drawer
+
+                  // Add navigation logic here
                 },
-              ), ListTile(
-                title: const Text('My Wallet'),
+              ),
+
+              ListTile(
+
+                leading: Icon(Icons.wallet, color: Colors.orange),
+
+                title: Text('My Wallet'),
+
                 onTap: () {
-                  // Update the state of the app.
-                  // ...
+
+                  Navigator.pop(context); // Close the drawer
+
+                  // Add navigation logic here
                 },
               ),
 
@@ -83,31 +117,60 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
 
               ListTile(
-                title: const Text('Rate Card'),
+
+                leading: Icon(Icons.discount, color: Colors.orange),
+
+                title: Text('Rate Card'),
+
                 onTap: () {
-                  // Update the state of the app.
-                  // ...
+
+                  Navigator.pop(context); // Close the drawer
+
+                  // Add navigation logic here
+                },
+              ),
+
+              ListTile(
+
+                leading: Icon(Icons.support, color: Colors.orange),
+
+                title: Text('Support'),
+
+                onTap: () {
+
+                  Navigator.pop(context); // Close the drawer
+
+                  // Add navigation logic here
                 },
               ),
               ListTile(
-                title: const Text('Support'),
+
+                leading: Icon(Icons.share, color: Colors.orange),
+
+                title: Text('Share App'),
+
                 onTap: () {
-                  // Update the state of the app.
-                  // ...
-                },
-              ), ListTile(
-                title: const Text('Share App'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                },
-              ), ListTile(
-                title: const Text('Logout'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
+
+                  Navigator.pop(context); // Close the drawer
+
+                  // Add navigation logic here
                 },
               ),
+
+              ListTile(
+
+                leading: Icon(Icons.logout, color: Colors.orange),
+
+                title: Text('Logout'),
+
+                onTap: () {
+
+                  Navigator.pop(context); // Close the drawer
+
+                  // Add navigation logic here
+                },
+              ),
+
             ],
           ),
         ),
