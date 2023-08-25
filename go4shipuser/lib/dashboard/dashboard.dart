@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go4shipuser/walletscreen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../profile/myprofile.dart';
@@ -73,7 +74,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 title: Text('My Profile'),
 
                 onTap: () {
-                  Navigator.pushReplacement(context,
+                  Navigator.push(context,
                       MaterialPageRoute(builder: (context) => MyProfile()));
 
 
@@ -104,8 +105,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 title: Text('My Wallet'),
 
                 onTap: () {
-
-                  Navigator.pop(context); // Close the drawer
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => WalletScreen()));
 
                   // Add navigation logic here
                 },

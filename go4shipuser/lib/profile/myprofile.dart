@@ -10,10 +10,17 @@ class MyProfile extends StatefulWidget {
 
 class _MyProfileState extends State<MyProfile> {
   bool isSelected = false;
+  bool isonswitch = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Profile'), backgroundColor: Colors.orange),
+      appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: Text('Profile'), backgroundColor: Colors.orange),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -59,10 +66,8 @@ class _MyProfileState extends State<MyProfile> {
               ),
             ),
             Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black)
-
-              ),
+              decoration:
+                  BoxDecoration(border: Border.all(color: Colors.black)),
               child: Padding(
                 padding: EdgeInsets.all(10),
                 child: Column(
@@ -126,93 +131,132 @@ class _MyProfileState extends State<MyProfile> {
               ),
             ),
             Container(
-              child: Row(
-                children: [
-                  Image.asset(width: 20,height: 20,'assets/images/emergency.png')
-                ],
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black)
-
-              ),
+              decoration:
+                  BoxDecoration(border: Border.all(color: Colors.black)),
               child: Padding(
                 padding: EdgeInsets.all(10),
                 child: Column(
                   children: [
-                    Text(
-                      'Enable others to track you:'
+                    Container(
+                      child: Row(
+                        children: [
+                          Image.asset(
+                              width: 25,
+                              height: 25,
+                              'assets/images/emergency.png'),
+                          Text(
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              '    Emergency Contect'),
+                        ],
+                      ),
                     ),
-                    /*ToggleButtons(
-                      isSelected: isSelected,
-                      onPressed: (int index) {
-                        setState(() {
-                          isSelected[index] = !isSelected[index];
-                        });
-                      },
-                      children: const <Widget>[
-                        Icon(Icons.ac_unit),
-                        Icon(Icons.call),
-                        Icon(Icons.cake),
+                    Row(
+                      children: [
+                        Text('Enable others to track you:'),
+                        Switch(
+                          // This bool value toggles the switch.
+                          value: isonswitch,
+                          activeColor: Colors.red,
+                          onChanged: (bool value) {
+                            // This is called when the user toggles the switch.
+                            setState(() {
+                              isonswitch = value;
+                            });
+                          },
+                        ),
                       ],
-                    ),*/
+                    ),
+                    Row(
+                      children: [
+                        Expanded(child: TextField(
+                          decoration: InputDecoration(
+                              prefixIcon: Image.asset(
+                                  width: 20,
+                                  height: 20,
+                                  'assets/images/user.png'),
+                              labelText: 'Relative1',
+                              hintText: 'Enter your Relative name'),
+                        ),),
+                        Expanded(child: TextField(
+                          decoration: InputDecoration(
+                              prefixIcon: Image.asset(
+                                  width: 20,
+                                  height: 20,
+                                  'assets/images/phone.png'),
+                              labelText: 'Mobile no.',
+                              hintText: 'Enter Relative Mobile no.'),
+                        ),),
 
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(child: TextField(
+                          decoration: InputDecoration(
+                              prefixIcon: Image.asset(
+                                  width: 20,
+                                  height: 20,
+                                  'assets/images/user.png'),
+                              labelText: 'Relative2',
+                              hintText: 'Enter your Relative name'),
+                        ),),
+                        Expanded(child: TextField(
+                          decoration: InputDecoration(
+                              prefixIcon: Image.asset(
+                                  width: 20,
+                                  height: 20,
+                                  'assets/images/phone.png'),
+                              labelText: 'Mobile no.',
+                              hintText: 'Enter Relative Mobile no.'),
+                        ),),
 
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(child: TextField(
+                          decoration: InputDecoration(
+                              prefixIcon: Image.asset(
+                                  width: 20,
+                                  height: 20,
+                                  'assets/images/user.png'),
+                              labelText: 'Relative3',
+                              hintText: 'Enter your Relative name'),
+                        ),),
+                        Expanded(child: TextField(
+                          decoration: InputDecoration(
+                              prefixIcon: Image.asset(
+                                  width: 20,
+                                  height: 20,
+                                  'assets/images/phone.png'),
+                              labelText: 'Mobile no.',
+                              hintText: 'Enter Relative Mobile no.'),
+                        ),),
 
-                    TextField(
-                      decoration: InputDecoration(
-                          prefixIcon: Image.asset(
-                              width: 20,
-                              height: 20,
-                              'assets/images/address.png'),
-                          labelText: 'Address',
-                          hintText: 'Enter your address'),
+                      ],
                     ),
-                    TextField(
-                      decoration: InputDecoration(
-                          prefixIcon: Image.asset(
-                              width: 20,
-                              height: 20,
-                              'assets/images/address.png'),
-                          labelText: 'Country',
-                          hintText: 'Enter your Country'),
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                          prefixIcon: Image.asset(
-                              width: 20,
-                              height: 20,
-                              'assets/images/address.png'),
-                          labelText: 'State',
-                          hintText: 'Enter your State'),
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                          prefixIcon: Image.asset(
-                              width: 20,
-                              height: 20,
-                              'assets/images/address.png'),
-                          labelText: 'City',
-                          hintText: 'Enter your City'),
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                          prefixIcon: Image.asset(
-                              width: 20,
-                              height: 20,
-                              'assets/images/address.png'),
-                          labelText: 'Zipcode',
-                          hintText: 'Enter your address'),
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                          prefixIcon: Image.asset(
-                              width: 20,
-                              height: 20,
-                              'assets/images/whatsapp.png'),
-                          labelText: 'ReferCode',
-                          hintText: 'Enter your Refercode'),
+                    Row(
+                      children: [
+                        Expanded(child: TextField(
+                          decoration: InputDecoration(
+                              prefixIcon: Image.asset(
+                                  width: 20,
+                                  height: 20,
+                                  'assets/images/user.png'),
+                              labelText: 'Relative4',
+                              hintText: 'Enter your Relative name'),
+                        ),),
+                        Expanded(child: TextField(
+                          decoration: InputDecoration(
+                              prefixIcon: Image.asset(
+                                  width: 20,
+                                  height: 20,
+                                  'assets/images/phone.png'),
+                              labelText: 'Mobile no.',
+                              hintText: 'Enter Relative Mobile no.'),
+                        ),),
+
+                      ],
                     ),
                   ],
                 ),
