@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go4shipuser/FCMClasses/notification_service.dart';
+import 'package:go4shipuser/dashboard/dashboard.dart';
 import 'package:go4shipuser/login_register/register_screen.dart';
+
+import '../constant/AppColor.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -35,8 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 200,
               decoration: BoxDecoration(
                   gradient: LinearGradient(colors: [
-                    Colors.deepOrangeAccent,
-                    Colors.orange,
+                    ColorConstants.AppColorDark,
+                    ColorConstants.AppColorLight,
                   ]),
                   boxShadow: [
                     BoxShadow(
@@ -58,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: 100, height: 100, 'assets/images/applogo.png'),
                   ),
                   Text(
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold, fontSize: 20),
                       "Login")
                 ],
               ),
@@ -101,13 +104,17 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
 
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => DashboardScreen()));
+              },
               child: Container(
                 width: 150,
                 height: 50,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50),
-                  color: Colors.deepOrangeAccent,
+                  color: ColorConstants.AppColorDark,
                 ),
                 child: Center(child: Text(style: TextStyle(fontWeight: FontWeight.bold, color:Colors.white,fontSize: 18),
                     'Login')),
@@ -130,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Text("Don't have an account?"),
                   ),
                   Container(
-                    child: Text(style: TextStyle(decoration: TextDecoration.underline,fontWeight:FontWeight.bold,color: Colors.deepOrange)," Sign up"),
+                    child: Text(style: TextStyle(fontSize:15,decoration: TextDecoration.underline,fontWeight:FontWeight.bold,color: ColorConstants.AppColorDark)," Sign up"),
                   ),
                 ],
 

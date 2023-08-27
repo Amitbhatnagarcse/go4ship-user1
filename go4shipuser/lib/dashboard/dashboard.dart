@@ -1,8 +1,15 @@
+import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:go4shipuser/constant/AppColor.dart';
+import 'package:go4shipuser/dashboard/Model/CabListModel.dart';
+import 'package:go4shipuser/ratecard/ratecard.dart';
 import 'package:go4shipuser/walletscreen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:http/http.dart';
+import '../constant/AppUrl.dart';
 import '../profile/myprofile.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -16,168 +23,160 @@ class _DashboardScreenState extends State<DashboardScreen> {
   late GoogleMapController myController;
   late Marker origin;
   late Marker destination;
-
+  ScrollController? _controller;
   final LatLng _center = const LatLng(37.7749, -122.4194);
+  int selectedIndex = 0; //will highlight first item
+
+  List cablist = [];
+
+  //var cablistdata;
 
   void _onMapCreated(GoogleMapController controller) {
     myController = controller;
   }
 
+  //List<String> youList=['1,'2','3','4'];
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-
         drawer: Drawer(
-          child:  ListView(
+          child: ListView(
             padding: EdgeInsets.zero,
             children: [
               Container(
+                height: MediaQuery.of(context).size.height,
+                color: ColorConstants.light_bluebg,
+                child: Column(
+                  children: [
+                    Container(
+                      child: Image.asset(
+                          fit: BoxFit.fill,
+                          width: double.infinity,
+                          height: 40,
+                          'assets/images/navhead.jpg'),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15),
+                        "  Go4Ship"),
+                    Divider(
+                      color: Colors.black,
+                      height: 3,
+                    ),
+                    Divider(
+                      color: Colors.black,
+                      height: 3,
+                    ),
+                    ListTile(
+                      leading:
+                          Icon(Icons.home, color: ColorConstants.AppColorDark),
+                      title: Text('Book your delivery'),
+                      onTap: () {
+                        Navigator.pop(context); // Close the drawer
 
-                child: Image.asset(
-                    fit: BoxFit.fill,
-                    width: double.infinity, height: 40, 'assets/images/navhead.jpg'),
-              ),
-              SizedBox(
-                height: 10,
-              ),
+                        // Add navigation logic here
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.person,
+                          color: ColorConstants.AppColorDark),
+                      title: Text('My Profile'),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyProfile()));
 
-              Text( style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                  "  Go4Ship"),
-              Divider(
-                color: Colors.black,
-                height: 3,
-              ),
-              Divider(
-                color: Colors.black,
-                height: 3,
-              ),
+                        // Navigator.pop(context); // Close the drawer
 
-              ListTile(
+                        // Add navigation logic here
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.watch_later,
+                          color: ColorConstants.AppColorDark),
+                      title: Text('My Bookings'),
+                      onTap: () {
+                        Navigator.pop(context); // Close the drawer
 
-                leading: Icon(Icons.home, color: Colors.orange),
+                        // Add navigation logic here
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.wallet,
+                          color: ColorConstants.AppColorDark),
+                      title: Text('My Wallet'),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => WalletScreen()));
 
-                title: Text('Book your delivery'),
+                        // Add navigation logic here
+                      },
+                    ),
+                    Divider(
+                      color: Colors.black,
+                      height: 3,
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.discount,
+                          color: ColorConstants.AppColorDark),
+                      title: Text('Rate Card'),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RateCard()));
 
-                onTap: () {
+                        //Navigator.pop(context); // Close the drawer
 
-                  Navigator.pop(context); // Close the drawer
+                        // Add navigation logic here
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.support,
+                          color: ColorConstants.AppColorDark),
+                      title: Text('Support'),
+                      onTap: () {
+                        Navigator.pop(context); // Close the drawer
 
-                  // Add navigation logic here
-                },
-              ),
+                        // Add navigation logic here
+                      },
+                    ),
+                    ListTile(
+                      leading:
+                          Icon(Icons.share, color: ColorConstants.AppColorDark),
+                      title: Text('Share App'),
+                      onTap: () {
+                        Navigator.pop(context); // Close the drawer
 
-              ListTile(
+                        // Add navigation logic here
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.logout,
+                          color: ColorConstants.AppColorDark),
+                      title: Text('Logout'),
+                      onTap: () {
+                        Navigator.pop(context); // Close the drawer
 
-                leading: Icon(Icons.person, color: Colors.orange),
-
-                title: Text('My Profile'),
-
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MyProfile()));
-
-
-                 // Navigator.pop(context); // Close the drawer
-
-                  // Add navigation logic here
-                },
-              ),
-
-              ListTile(
-
-                leading: Icon(Icons.watch_later, color: Colors.orange),
-
-                title: Text('My Bookings'),
-
-                onTap: () {
-
-                  Navigator.pop(context); // Close the drawer
-
-                  // Add navigation logic here
-                },
-              ),
-
-              ListTile(
-
-                leading: Icon(Icons.wallet, color: Colors.orange),
-
-                title: Text('My Wallet'),
-
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => WalletScreen()));
-
-                  // Add navigation logic here
-                },
-              ),
-
-              Divider(
-                color: Colors.black,
-                height: 3,
-              ),
-
-              ListTile(
-
-                leading: Icon(Icons.discount, color: Colors.orange),
-
-                title: Text('Rate Card'),
-
-                onTap: () {
-
-                  Navigator.pop(context); // Close the drawer
-
-                  // Add navigation logic here
-                },
-              ),
-
-              ListTile(
-
-                leading: Icon(Icons.support, color: Colors.orange),
-
-                title: Text('Support'),
-
-                onTap: () {
-
-                  Navigator.pop(context); // Close the drawer
-
-                  // Add navigation logic here
-                },
-              ),
-              ListTile(
-
-                leading: Icon(Icons.share, color: Colors.orange),
-
-                title: Text('Share App'),
-
-                onTap: () {
-
-                  Navigator.pop(context); // Close the drawer
-
-                  // Add navigation logic here
-                },
-              ),
-
-              ListTile(
-
-                leading: Icon(Icons.logout, color: Colors.orange),
-
-                title: Text('Logout'),
-
-                onTap: () {
-
-                  Navigator.pop(context); // Close the drawer
-
-                  // Add navigation logic here
-                },
-              ),
-
+                        // Add navigation logic here
+                      },
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ),
         appBar: AppBar(
           title: Text('Flutter Maps Demo'),
-          backgroundColor: Colors.green,
+          backgroundColor: ColorConstants.AppColorDark,
         ),
         body: Stack(
           children: <Widget>[
@@ -188,19 +187,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
               initialCameraPosition: CameraPosition(
                 target: _center,
                 zoom: 12.0,
-              ),polylines: {
+              ),
+              polylines: {
                 Polyline(
-                  polylineId: PolylineId('route'),
-                  color: Colors.blue,
-                  width: 5,
-                  points: [
-                    LatLng(37.7749, -122.4194),
-                    LatLng(37.7899, -122.4334),
-                    LatLng(37.8005, -122.4357),
-                  ]
-                )
-            },
-
+                    polylineId: PolylineId('route'),
+                    color: Colors.blue,
+                    width: 5,
+                    points: [
+                      LatLng(37.7749, -122.4194),
+                      LatLng(37.7899, -122.4334),
+                      LatLng(37.8005, -122.4357),
+                    ])
+              },
 
               /*markers: {
                 if (origin != null) origin,
@@ -208,26 +206,122 @@ class _DashboardScreenState extends State<DashboardScreen> {
               },
               onLongPress: _addmarker,*/
             ),
+            Column(
+              children: [
+                Container(
+                    margin: EdgeInsets.all(5),
+                    color: Colors.white,
+                    height: 120,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: cablist.length,
+                      // list item builder
+                      itemBuilder: (BuildContext ctx, index) {
+                        return Card(
+                          child: ListTile(
+                            title: Text('akjdfhjhadfghjbgfhg'),
+                          ),
+                        );
+                      },
+                    )),
+                Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.all(5),
+                    color: Colors.white,
+                    height: 80,
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Image.asset(
+                              height: 30, 'assets/images/tarck_others.png'),
+                        )),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text('Delivery Location'),
+                          ),
+                        ),
+                        Expanded(
+                            child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Image.asset(
+                              height: 30, 'assets/images/map_location.png'),
+                        )),
+                      ],
+                    )),
+                Align(
 
+                  alignment: Alignment.topRight,
+                  child:  Container(
+                    margin: EdgeInsets.only(right: 5),
+                    width: 180,
+                    color: Colors.black,
+                    height: 40,
+                    child: Center(child: Text(style: TextStyle(color: Colors.white),'+ Add Pickup Location')),
+                  ),
+                )
 
-
-
-            Padding(
-              padding: const EdgeInsets.all(14.0),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: FloatingActionButton(
-                  onPressed: () => print('You have pressed the button'),
-                  materialTapTargetSize: MaterialTapTargetSize.padded,
-                  backgroundColor: Colors.green,
-                  child: const Icon(Icons.map, size: 30.0),
+              ],
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                margin: EdgeInsets.all(5),
+                height: 50,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                        child: Container(
+                      height: 50,
+                      color: Colors.black,
+                      child: Center(
+                        child: Text(
+                          'DELIVER LATER'.toUpperCase(),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
+                      ),
+                    )),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                        child: Container(
+                      height: 50,
+                      color: Colors.black,
+                      child: Center(
+                        child: Text(
+                          'DELIVER NOW'.toUpperCase(),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
+                      ),
+                    )),
+                  ],
                 ),
               ),
             ),
+
+
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+    //getCabList();
   }
 
   @override
@@ -257,6 +351,82 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
             position: pos);
       });
+    }
+  }
+
+  Future<String> getCabList() async {
+    /* await EasyLoading.show(
+      status: 'loading...',
+      maskType: EasyLoadingMaskType.black,
+    );*/
+    var response = await post(
+        Uri.parse(AppConstants.app_base_url + AppConstants.cablist_Api),
+        body: {});
+    var resBody = json.decode(response.body);
+    final apiResponse = CabListModel.fromJson(resBody);
+    setState(() {
+      print('print list');
+      if (apiResponse != null) {
+        print('print list inner');
+        cablist = resBody['result'];
+        print('print list inner${cablist}');
+      } else {
+        //reLoginDialog();
+      }
+    });
+    //dismiss loader
+    // await EasyLoading.dismiss();
+    return "Success";
+  }
+
+  Widget _itemBuilder(BuildContext context, int index) {
+    return InkWell(
+      child: Container(
+        child: Column(
+          children: [
+            /* Expanded(
+                child: Container(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 5,top: 5,bottom: 2,right: 5),
+                    child: Image.network('cablis[index]['logo_url'].toString()'),
+                  ),
+                )),*/
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+                'nbjhdhshjdfghjdg',
+                /*'${cablist == null ? "" : cablist[index]['cabtype'].toString()}',*/
+                style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.black,
+                    fontWeight: FontWeight.normal),
+              ),
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void getData() async {
+    try {
+      var response =
+          await Dio().get(AppConstants.app_base_url + AppConstants.cablist_Api);
+      if (response.statusCode == 200) {
+        setState(() {
+          print('print lenth${response.data['result']}');
+          cablist = response.data['result'] as List;
+        });
+
+
+
+
+      }
+
+      print(response);
+    } catch (e) {
+      print(e);
     }
   }
 }

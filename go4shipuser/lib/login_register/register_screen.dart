@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go4shipuser/login_register/login_screen.dart';
 import 'package:go4shipuser/FCMClasses/notification_service.dart';
 
+import '../constant/AppColor.dart';
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -35,8 +37,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               height: 200,
               decoration: BoxDecoration(
                   gradient: LinearGradient(colors: [
-                    Colors.deepOrangeAccent,
-                    Colors.orange,
+                    ColorConstants.AppColorDark,
+                    ColorConstants.AppColorPrimary,
                   ]),
                   boxShadow: [
                     BoxShadow(
@@ -58,13 +60,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         width: 100, height: 100, 'assets/images/applogo.png'),
                   ),
                   Text(
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold, fontSize: 20),
                       "Register")
                 ],
               ),
             ),
             SizedBox(
-              height: 70,
+              height: 20,
             ),
             Column(
               children: [
@@ -94,7 +96,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 50,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
-                              color: Colors.deepOrangeAccent,
+                              color: ColorConstants.AppColorDark,
                             ),
                             child: Center(child: Text(style: TextStyle(fontWeight: FontWeight.bold, color:Colors.white,fontSize: 18),
                                 'Get Otp')),
@@ -119,7 +121,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 Container(
                   child: Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.all(5),
                     child: TextField(
                       maxLength: 6,
                       keyboardType: TextInputType.number,
@@ -132,7 +134,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 Container(
                   child: Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.all(6),
                     child: TextField(
                       obscureText: true,
                       decoration: InputDecoration(
@@ -147,7 +149,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 Container(
                   child: Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.all(6),
                     child: TextField(
                       obscureText: true,
                       decoration: InputDecoration(
@@ -161,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
 
             SizedBox(
-              height: 50,
+              height: 30,
             ),
 
             GestureDetector(
@@ -173,7 +175,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 height: 50,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50),
-                  color: Colors.deepOrangeAccent,
+                  color: ColorConstants.AppColorDark,
                 ),
                 child: Center(child: Text(style: TextStyle(fontWeight: FontWeight.bold, color:Colors.white,fontSize: 18),
                     'Login')),
