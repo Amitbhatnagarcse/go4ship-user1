@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:go4shipuser/constant/AppColor.dart';
 import 'package:go4shipuser/dashboard/Model/CabListModel.dart';
 import 'package:go4shipuser/ratecard/ratecard.dart';
@@ -214,15 +214,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     height: 120,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: cablist.length,
+                      itemCount: getLength(),
                       // list item builder
-                      itemBuilder: (BuildContext ctx, index) {
-                        return Card(
-                          child: ListTile(
-                            title: Text('akjdfhjhadfghjbgfhg'),
-                          ),
-                        );
-                      },
+                      itemBuilder: _itemBuilder,
                     )),
                 Container(
                     width: double.infinity,
@@ -252,17 +246,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ],
                     )),
                 Align(
-
                   alignment: Alignment.topRight,
-                  child:  Container(
+                  child: Container(
                     margin: EdgeInsets.only(right: 5),
                     width: 180,
                     color: Colors.black,
                     height: 40,
-                    child: Center(child: Text(style: TextStyle(color: Colors.white),'+ Add Pickup Location')),
+                    child: Center(
+                        child: Text(
+                            style: TextStyle(color: Colors.white),
+                            '+ Add Pickup Location')),
                   ),
                 )
-
               ],
             ),
             Align(
@@ -308,8 +303,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
             ),
-
-
           ],
         ),
       ),
@@ -382,31 +375,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _itemBuilder(BuildContext context, int index) {
     return InkWell(
       child: Container(
-        child: Column(
+        width: 150,
+        height: 100,
+        child: Row(
           children: [
-            /* Expanded(
-                child: Container(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 5,top: 5,bottom: 2,right: 5),
-                    child: Image.network('cablis[index]['logo_url'].toString()'),
-                  ),
-                )),*/
-            Expanded(
-                child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Text(
-                'nbjhdhshjdfghjdg',
-                /*'${cablist == null ? "" : cablist[index]['cabtype'].toString()}',*/
-                style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.black,
-                    fontWeight: FontWeight.normal),
-              ),
-            )),
+            Column(
+              children: [
+                Expanded(
+                  child: Image.network(cablist[index]['logo_url']),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Expanded(
+                    child: Text(
+                  '${cablist == null ? "" : cablist[index]['cabtype']}',
+                  style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.black,
+                      fontWeight: FontWeight.normal),
+                )),
+              ],
+            ),
+            VerticalDivider(
+              width: 1,
+              color: Colors.black,
+            )
           ],
         ),
       ),
     );
+  }
+
+  int getLength() {
+    if (cablist.isNotEmpty) {
+      return cablist.length;
+    } else {
+      return 0;
+    }
   }
 
   void getData() async {
@@ -415,16 +421,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
           await Dio().get(AppConstants.app_base_url + AppConstants.cablist_Api);
       if (response.statusCode == 200) {
         setState(() {
-          print('print lenth${response.data['result']}');
-          cablist = response.data['result'] as List;
+          //print('print lenth${response.data['result'][0]['cabtypes']}');
+          cablist = response.data['result'][0]['cabtypes'] as List;
+          print('print lenth${cablist}');
+          // var recordsList = response.data["cabtype"];
+          // print('print cabtype......................${response.data['cabtypes']}');
         });
-
-
-
-
       }
-
-      print(response);
+      // print(response);
     } catch (e) {
       print(e);
     }
