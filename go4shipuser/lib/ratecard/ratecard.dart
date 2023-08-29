@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../constant/AppColor.dart';
+
 List<String> list = <String>['One', 'Two', 'Three', 'Four'];
 
 class RateCard extends StatefulWidget {
@@ -22,7 +24,7 @@ class _RateCardState extends State<RateCard> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: Text('Rate Card'),
-          backgroundColor: Colors.orange),
+          backgroundColor: ColorConstants.AppColorDark),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -91,7 +93,7 @@ class _RateCardState extends State<RateCard> {
                     margin: EdgeInsets.only(left: 10, top: 10),
                     padding: EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                        color: Colors.orange,
+                        color: ColorConstants.AppColorDark,
                         borderRadius: BorderRadius.all(Radius.circular(20))),
                     child: Image.asset(
                         height: 50, width: 50, 'assets/images/black_car.png')),
@@ -103,14 +105,15 @@ class _RateCardState extends State<RateCard> {
                     '  Micro'),
               ],
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Divider(
               color: Colors.grey,
               height: .5,
             ),
-
             Container(
-              margin: EdgeInsets.only(top:10),
+              margin: EdgeInsets.only(top: 10),
               child: Text(
                   style: TextStyle(
                       fontSize: 20,
@@ -118,12 +121,16 @@ class _RateCardState extends State<RateCard> {
                       fontWeight: FontWeight.bold),
                   '  Total Fair'),
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Divider(
               color: Colors.grey,
               height: .5,
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Container(
               height: 200,
               child: ListView.builder(

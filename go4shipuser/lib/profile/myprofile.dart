@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../constant/AppColor.dart';
+
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
 
@@ -20,7 +22,7 @@ class _MyProfileState extends State<MyProfile> {
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title: Text('Profile'), backgroundColor: Colors.orange),
+          title: Text('Profile'), backgroundColor: ColorConstants.AppColorDark),
       body: SingleChildScrollView(
         child: Column(
           children: [

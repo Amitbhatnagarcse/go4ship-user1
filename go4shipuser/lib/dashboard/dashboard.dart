@@ -6,9 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:go4shipuser/constant/AppColor.dart';
 import 'package:go4shipuser/dashboard/Model/CabListModel.dart';
 import 'package:go4shipuser/ratecard/ratecard.dart';
+import 'package:go4shipuser/support/support.dart';
 import 'package:go4shipuser/walletscreen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
+
+import 'package:share_plus/share_plus.dart';
 import '../constant/AppUrl.dart';
 import '../profile/myprofile.dart';
 
@@ -101,7 +104,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           color: ColorConstants.AppColorDark),
                       title: Text('My Bookings'),
                       onTap: () {
-                        Navigator.pop(context); // Close the drawer
+                        //Navigator.pop(context); // Close the drawer
 
                         // Add navigation logic here
                       },
@@ -143,8 +146,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           color: ColorConstants.AppColorDark),
                       title: Text('Support'),
                       onTap: () {
-                        Navigator.pop(context); // Close the drawer
-
+                        // Navigator.pop(context); // Close the drawer
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SupportScreen()));
                         // Add navigation logic here
                       },
                     ),
@@ -153,8 +159,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Icon(Icons.share, color: ColorConstants.AppColorDark),
                       title: Text('Share App'),
                       onTap: () {
-                        Navigator.pop(context); // Close the drawer
+                        //Navigator.pop(context); // Close the drawer
 
+                        Share.share('Hi,I would like to share Application which is used to get more rides &amp; more income. Please download it from Google Play Store Free Here \n https://play.google.com/store/apps/details?id=com.go4ship.user');
                         // Add navigation logic here
                       },
                     ),
@@ -209,9 +216,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Column(
               children: [
                 Container(
-                    margin: EdgeInsets.all(5),
+                    margin: EdgeInsets.only(left: 12, right: 12, top: 5),
                     color: Colors.white,
-                    height: 120,
+                    height: 90,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: getLength(),
@@ -220,16 +227,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     )),
                 Container(
                     width: double.infinity,
-                    margin: EdgeInsets.all(5),
+                    margin: EdgeInsets.only(left: 12, right: 12, top: 5),
                     color: Colors.white,
-                    height: 80,
+                    height: 50,
                     child: Row(
                       children: [
                         Expanded(
                             child: Align(
                           alignment: Alignment.centerLeft,
-                          child: Image.asset(
-                              height: 30, 'assets/images/tarck_others.png'),
+                          child: Container(
+                            margin: EdgeInsets.only(left: 10),
+                            child: Image.asset(
+                                height: 25, 'assets/images/tarck_others.png'),
+                          ),
                         )),
                         Expanded(
                           child: Align(
@@ -240,15 +250,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Expanded(
                             child: Align(
                           alignment: Alignment.centerRight,
-                          child: Image.asset(
-                              height: 30, 'assets/images/map_location.png'),
+                          child: Container(
+                            margin: EdgeInsets.only(right: 10),
+                            child: Image.asset(
+                                height: 20, 'assets/images/map_location.png'),
+                          ),
                         )),
                       ],
                     )),
                 Align(
                   alignment: Alignment.topRight,
                   child: Container(
-                    margin: EdgeInsets.only(right: 5),
+                    margin: EdgeInsets.only(right: 12, top: 5),
                     width: 180,
                     color: Colors.black,
                     height: 40,

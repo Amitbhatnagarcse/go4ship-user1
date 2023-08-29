@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'constant/AppColor.dart';
+
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
 
@@ -17,7 +19,7 @@ class _WalletScreenState extends State<WalletScreen> {
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title: Text('Wallet'), backgroundColor: Colors.orange),
+          title: Text('Wallet'), backgroundColor: ColorConstants.AppColorDark),
       body: SingleChildScrollView(
         child: Column(
           children: [
