@@ -24,29 +24,39 @@ class _SupportScreenState extends State<SupportScreen> {
           ),
           title: Text('Support'), backgroundColor: ColorConstants.AppColorDark),
 
-      body: Container(
-        child: Column(
-          children: [
-            Text('How can we help ?'),
-            Container(
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      prefixIcon: Image.asset(
-                          width: 10, height: 10, 'assets/images/search.png'),
-                      border: OutlineInputBorder(),
-                      labelText: 'Search',
-                      hintText: 'Search'),
+      body: SingleChildScrollView(
+        child:  Container(
+          child: Column(
+            children: [
+              Text('How can we help ?'),
+              Container(
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        prefixIcon: Image.asset(
+                            width: 10, height: 10, 'assets/images/search.png'),
+                        border: OutlineInputBorder(),
+                        labelText: 'Search',
+                        hintText: 'Search'),
+                  ),
                 ),
               ),
-            ),
+              Container(
+                  margin: EdgeInsets.only(left: 3, right: 3, top: 5),
+                  color: Colors.white,
+                  height: MediaQuery.of(context).size.height,
+                  child: ListView.builder(
+                    itemCount: getLength(),
+                    // list item builder
+                    itemBuilder: _itemBuilder,
+                  )),
 
-
-          ],
+            ],
+          ),
         ),
-      ),
+      )
 
     );
   }
@@ -77,34 +87,35 @@ class _SupportScreenState extends State<SupportScreen> {
   Widget _itemBuilder(BuildContext context, int index) {
     return InkWell(
       child: Container(
-        width: 150,
-        height: 100,
-        child: Row(
+        height: 250,
+        child: Column(
           children: [
-            Column(
-              children: [
-                Expanded(
-                  child: Image.network(faqs_list[index]['logo_url']),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Expanded(
-                    child: Text(
-                      '${faqs_list == null ? "" : faqs_list[index]['cabtype']}',
-                      style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.black,
-                          fontWeight: FontWeight.normal),
-                    )),
-              ],
+            Text(
+                '${faqs_list[index]['ques']}',
+            style: TextStyle(fontWeight: FontWeight.bold),
+              maxLines: 2,
             ),
-            VerticalDivider(
-              width: 1,
+
+            SizedBox(height: 10,),
+            Text(
+             // 'nqjkabfkbajebfjhsbdjh',
+              '${faqs_list == null ? "" : faqs_list[index]['ans']}',
+              style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.black,
+                  fontWeight: FontWeight.normal),
+
+            ),
+            SizedBox(height: 10,),
+            Divider(
               color: Colors.black,
+              height: 2,
             )
+
+
           ],
         ),
+
       ),
     );
   }

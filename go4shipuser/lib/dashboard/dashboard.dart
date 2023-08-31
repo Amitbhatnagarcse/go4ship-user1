@@ -27,6 +27,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   late Marker origin;
   late Marker destination;
   ScrollController? _controller;
+  late Dialog dialog;
   final LatLng _center = const LatLng(37.7749, -122.4194);
   int selectedIndex = 0; //will highlight first item
 
@@ -76,17 +77,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     ListTile(
                       leading:
-                          Icon(Icons.home, color: ColorConstants.AppColorDark),
+                          Icon(Icons.home, color: ColorConstants.black),
                       title: Text('Book your delivery'),
                       onTap: () {
-                        Navigator.pop(context); // Close the drawer
+                       // Navigator.pop(context); // Close the drawer
 
                         // Add navigation logic here
                       },
                     ),
                     ListTile(
                       leading: Icon(Icons.person,
-                          color: ColorConstants.AppColorDark),
+                          color: ColorConstants.black),
                       title: Text('My Profile'),
                       onTap: () {
                         Navigator.push(
@@ -101,7 +102,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     ListTile(
                       leading: Icon(Icons.watch_later,
-                          color: ColorConstants.AppColorDark),
+                          color: ColorConstants.black),
                       title: Text('My Bookings'),
                       onTap: () {
                         //Navigator.pop(context); // Close the drawer
@@ -111,7 +112,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     ListTile(
                       leading: Icon(Icons.wallet,
-                          color: ColorConstants.AppColorDark),
+                          color: ColorConstants.black),
                       title: Text('My Wallet'),
                       onTap: () {
                         Navigator.push(
@@ -128,7 +129,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     ListTile(
                       leading: Icon(Icons.discount,
-                          color: ColorConstants.AppColorDark),
+                          color: ColorConstants.black),
                       title: Text('Rate Card'),
                       onTap: () {
                         Navigator.push(
@@ -143,7 +144,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     ListTile(
                       leading: Icon(Icons.support,
-                          color: ColorConstants.AppColorDark),
+                          color: ColorConstants.black),
                       title: Text('Support'),
                       onTap: () {
                         // Navigator.pop(context); // Close the drawer
@@ -156,7 +157,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     ListTile(
                       leading:
-                          Icon(Icons.share, color: ColorConstants.AppColorDark),
+                          Icon(Icons.share, color: ColorConstants.black),
                       title: Text('Share App'),
                       onTap: () {
                         //Navigator.pop(context); // Close the drawer
@@ -167,7 +168,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     ListTile(
                       leading: Icon(Icons.logout,
-                          color: ColorConstants.AppColorDark),
+                          color: ColorConstants.black),
                       title: Text('Logout'),
                       onTap: () {
                         Navigator.pop(context); // Close the drawer
@@ -282,19 +283,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                        child: Container(
-                      height: 50,
-                      color: Colors.black,
-                      child: Center(
-                        child: Text(
-                          'DELIVER LATER'.toUpperCase(),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        ),
-                      ),
-                    )),
+                        child: GestureDetector(
+                          onTap: () {
+
+                            openAlert();
+                          },
+                          child: Container(
+                            height: 50,
+                            color: Colors.black,
+                            child: Center(
+                              child: Text(
+                                'DELIVER LATER'.toUpperCase(),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16),
+                              ),
+                            ),
+                          ),
+                        )),
                     SizedBox(
                       width: 10,
                     ),
@@ -320,8 +327,102 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ),
     );
-  }
 
+
+  }
+  void openAlert() {
+    dialog = Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      //this right here
+      child: Container(
+        height: 350.0,
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+
+            Container(
+              margin: EdgeInsets.only(top: 16),
+              //decoration: boxDecorationStylealert,
+              width: 200,
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              height: 50,
+              child:  Column(
+                children: [
+                  Container(
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: TextField(
+                        maxLength: 10,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Mobile no.',
+                            hintText: 'Enter valid 10 digit mobile no.'),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: TextField(
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Password',
+                            hintText: 'Enter your secure password'),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(child: Container()),
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 12, right: 6),
+                    child: MaterialButton(
+                      onPressed:(){
+
+                      },
+                      color: Colors.green,
+                      child: Text(
+                        "CANCEL",
+                        style: TextStyle(fontSize: 12, color: Colors.white),
+                      ),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4)),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 6, right: 12),
+                    child: MaterialButton(
+                      onPressed: (){
+
+                      },
+                      color: Colors.green,
+                      child: Text(
+                        "OK",
+                        style: TextStyle(fontSize: 12, color: Colors.white),
+                      ),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4)),
+                    ),
+                  ),
+                )
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+    showDialog(
+        context: context, builder: (BuildContext context) => dialog);
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -446,4 +547,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       print(e);
     }
   }
+
+
+
 }
+
+
