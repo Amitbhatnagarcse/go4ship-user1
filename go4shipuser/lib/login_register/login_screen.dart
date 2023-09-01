@@ -8,7 +8,6 @@ import '../constant/AppColor.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -31,12 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
-
           children: [
             Container(
-
-
-
               height: 200,
               decoration: BoxDecoration(
                   gradient: LinearGradient(colors: [

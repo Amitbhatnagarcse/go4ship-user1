@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../constant/AppColor.dart';
 import '../constant/AppUrl.dart';
 
@@ -24,40 +23,30 @@ class _SupportScreenState extends State<SupportScreen> {
           ),
           title: Text('Support'), backgroundColor: ColorConstants.AppColorDark),
 
-      body: SingleChildScrollView(
-        child:  Container(
-          child: Column(
-            children: [
-              Text('How can we help ?'),
-              Container(
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        prefixIcon: Image.asset(
-                            width: 10, height: 10, 'assets/images/search.png'),
-                        border: OutlineInputBorder(),
-                        labelText: 'Search',
-                        hintText: 'Search'),
-                  ),
-                ),
+      body: Column(
+        children: [
+          Text('How can we help ?'),
+          Container(
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: TextField(
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                    prefixIcon: Image.asset(
+                        width: 10, height: 10, 'assets/images/search.png'),
+                    border: OutlineInputBorder(),
+                    labelText: 'Search',
+                    hintText: 'Search'),
               ),
-              Container(
-                  margin: EdgeInsets.only(left: 3, right: 3, top: 5),
-                  color: Colors.white,
-                  height: MediaQuery.of(context).size.height,
-                  child: ListView.builder(
-                    itemCount: getLength(),
-                    // list item builder
-                    itemBuilder: _itemBuilder,
-                  )),
-
-            ],
+            ),
           ),
-        ),
+         Expanded(child:  ListView.builder(
+           itemCount: getLength(),
+           // list item builder
+           itemBuilder: _itemBuilder,
+         ))
+        ],
       )
-
     );
   }
   @override
@@ -68,15 +57,10 @@ class _SupportScreenState extends State<SupportScreen> {
   }
   void getData() async {
     try {
-      var response =
-      await Dio().get(AppConstants.app_base_url + AppConstants.supportlist_Api);
+      var response = await Dio().get(AppConstants.app_base_url + AppConstants.supportlist_Api);
       if (response.statusCode == 200) {
         setState(() {
-          //print('print lenth${response.data['result'][0]['cabtypes']}');
           faqs_list = response.data['result'] as List;
-          print('print lenth${faqs_list}');
-          // var recordsList = response.data["cabtype"];
-          // print('print cabtype......................${response.data['cabtypes']}');
         });
       }
       // print(response);
@@ -87,24 +71,27 @@ class _SupportScreenState extends State<SupportScreen> {
   Widget _itemBuilder(BuildContext context, int index) {
     return InkWell(
       child: Container(
-        height: 250,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
-                '${faqs_list[index]['ques']}',
+                '${faqs_list[index]['ques'].toString().trim()}',
             style: TextStyle(fontWeight: FontWeight.bold),
               maxLines: 2,
             ),
 
             SizedBox(height: 10,),
-            Text(
-             // 'nqjkabfkbajebfjhsbdjh',
-              '${faqs_list == null ? "" : faqs_list[index]['ans']}',
-              style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+               // 'nqjkabfkbajebfjhsbdjh',
+                '${faqs_list == null ? "" : faqs_list[index]['ans'].toString().trim()}',
+                style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.black,
+                    fontWeight: FontWeight.normal),
 
+              ),
             ),
             SizedBox(height: 10,),
             Divider(
@@ -122,6 +109,7 @@ class _SupportScreenState extends State<SupportScreen> {
 
   int getLength() {
     if (faqs_list.isNotEmpty) {
+      print("lenght of list ${faqs_list.length}");
       return faqs_list.length;
     } else {
       return 0;

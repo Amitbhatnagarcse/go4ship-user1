@@ -14,6 +14,7 @@ import 'package:http/http.dart';
 import 'package:share_plus/share_plus.dart';
 import '../constant/AppUrl.dart';
 import '../profile/myprofile.dart';
+import 'category_icon.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -82,6 +83,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       onTap: () {
                        // Navigator.pop(context); // Close the drawer
 
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => DashboardScreen()));
                         // Add navigation logic here
                       },
                     ),
@@ -214,9 +217,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
               },
               onLongPress: _addmarker,*/
             ),
+
             Column(
               children: [
-                Container(
+                SizedBox(height: 10,),
+                SizedBox(
+                    height: 100,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: getLength(),
+                      itemBuilder: (BuildContext context, int index) {
+                        return CategoryIcons(
+                          iconColor: Colors.white,
+                          title: cablist[index]['cabtype'],
+                          icon: cablist[index]['logo_url'],
+                        );
+                      },
+                    )
+                ),
+           /*     Container(
                     margin: EdgeInsets.only(left: 12, right: 12, top: 5),
                     color: Colors.white,
                     height: 90,
@@ -225,7 +244,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       itemCount: getLength(),
                       // list item builder
                       itemBuilder: _itemBuilder,
-                    )),
+                    )),*/
                 Container(
                     width: double.infinity,
                     margin: EdgeInsets.only(left: 12, right: 12, top: 5),
@@ -487,37 +506,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _itemBuilder(BuildContext context, int index) {
-    return InkWell(
-      child: Container(
-        width: 150,
-        height: 100,
-        child: Row(
-          children: [
-            Column(
-              children: [
-                Expanded(
-                  child: Image.network(cablist[index]['logo_url']),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Expanded(
-                    child: Text(
-                  '${cablist == null ? "" : cablist[index]['cabtype']}',
-                  style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.black,
-                      fontWeight: FontWeight.normal),
-                )),
-              ],
-            ),
-            VerticalDivider(
-              width: 1,
-              color: Colors.black,
-            )
-          ],
+    return Wrap(
+      children: [
+        Container(
+
+          width: 100,
+          height: 100,
+          child: Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Image.network(cablist[index]['logo_url']),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Expanded(
+                      child: Text(
+                        '${cablist == null ? "" : cablist[index]['cabtype']}',
+                        style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.black,
+                            fontWeight: FontWeight.normal),
+                      )),
+                ],
+              ),
+              VerticalDivider(
+                width: 1,
+                color: Colors.black,
+              )
+            ],
+          ),
         ),
-      ),
+      ],
+
     );
   }
 

@@ -45,6 +45,7 @@ dependencies:
   dio: ^4.0.0
   flutter_easyloading: ^3.0.3
   share_plus: ^6.3.4
+  cached_network_image: ^3.2.3
 
   #app_settings: ^5.0.0
 
