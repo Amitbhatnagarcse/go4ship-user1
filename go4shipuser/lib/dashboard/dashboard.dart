@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 
 import 'package:go4shipuser/constant/AppColor.dart';
 import 'package:go4shipuser/dashboard/Model/CabListModel.dart';
+import 'package:go4shipuser/dashboard/MySearchLocation.dart';
 import 'package:go4shipuser/ratecard/ratecard.dart';
 import 'package:go4shipuser/support/support.dart';
 import 'package:go4shipuser/walletscreen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
+import 'package:search_map_location/search_map_location.dart';
 
 import 'package:share_plus/share_plus.dart';
 import '../constant/AppUrl.dart';
@@ -31,7 +33,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   late Dialog dialog;
   final LatLng _center = const LatLng(37.7749, -122.4194);
   int selectedIndex = 0; //will highlight first item
-
+  //List<PlacesSearchResult> places = [];
   List cablist = [];
 
   //var cablistdata;
@@ -280,16 +282,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     )),
                 Align(
                   alignment: Alignment.topRight,
-                  child: Container(
-                    margin: EdgeInsets.only(right: 12, top: 5),
-                    width: 180,
-                    color: Colors.black,
-                    height: 40,
-                    child: Center(
-                        child: Text(
-                            style: TextStyle(color: Colors.white),
-                            '+ Add Pickup Location')),
-                  ),
+                  child:GestureDetector(
+                    onTap: () async {
+                     /* Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => MySearchLocation()));*/
+                      final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MySearchLocation(),
+                          ));
+
+                      setState(() async {
+                        print('resultBack;------------${result}');
+                       // text = result;
+
+                       // final geolocation = await result.geolocation;
+                       // final GoogleMapController controller = await myController.future;
+                      //  myController.animateCamera(CameraUpdate.newLatLng(geolocation.coordinates));
+                        //myController.animateCamera(CameraUpdate.newLatLngBounds(geolocation.bounds, 0));
+                      });
+                    },
+                    child:  Container(
+                      margin: EdgeInsets.only(right: 12, top: 5),
+                      width: 180,
+                      color: Colors.black,
+                      height: 40,
+                      child: Center(
+                          child: Text(
+                              style: TextStyle(color: Colors.white),
+                              '+ Add Pickup Location')),
+                    ),
+                  )
                 )
               ],
             ),
@@ -572,9 +595,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       print(e);
     }
   }
-
-
-
 }
 
 
