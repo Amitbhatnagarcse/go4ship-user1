@@ -35,6 +35,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int selectedIndex = 0; //will highlight first item
   //List<PlacesSearchResult> places = [];
   List cablist = [];
+  List<String> locationAddlist = [];
 
   //var cablistdata;
 
@@ -295,7 +296,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       setState(() async {
                         print('resultBack;------------${result}');
                        // text = result;
-
+                        //locationAddlist.add( await result.geolocation);
+                        locationAddlist.add('${result}');
+                        print('listlenth:-------${locationAddlist.length}');
                        // final geolocation = await result.geolocation;
                        // final GoogleMapController controller = await myController.future;
                       //  myController.animateCamera(CameraUpdate.newLatLng(geolocation.coordinates));
@@ -312,10 +315,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               style: TextStyle(color: Colors.white),
                               '+ Add Pickup Location')),
                     ),
+
+
                   )
-                )
+
+                ),
+               SizedBox(height: 5,),
+                Container(
+
+                  width: double.infinity,
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                    itemCount: getAddLocationLength(),
+                    itemBuilder: _addLocationitemBuilder
+                  ),
+                ),
               ],
+
             ),
+
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -348,28 +366,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       width: 10,
                     ),
                     Expanded(
-                        child: Container(
-                      height: 50,
-                      color: Colors.black,
-                      child: Center(
-                        child: Text(
-                          'DELIVER NOW'.toUpperCase(),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        ),
-                      ),
-                    )),
+                        child: GestureDetector(
+                          onTap: (){
+
+                          },
+                          child: Container(
+                            height: 50,
+                            color: Colors.black,
+                            child: Center(
+                              child: Text(
+                                'DELIVER NOW'.toUpperCase(),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16),
+                              ),
+                            ),
+                          )),
+
+                        )
+
                   ],
                 ),
               ),
             ),
+
           ],
         ),
       ),
     );
-
 
   }
   void openAlert() {
@@ -577,6 +602,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  int getAddLocationLength() {
+    if (locationAddlist.isNotEmpty) {
+      return locationAddlist.length;
+    } else {
+      return 0;
+    }
+  }
+
   void getData() async {
     try {
       var response =
@@ -594,6 +627,47 @@ class _DashboardScreenState extends State<DashboardScreen> {
     } catch (e) {
       print(e);
     }
+  }
+  Widget _addLocationitemBuilder(BuildContext context, int index) {
+    return InkWell(
+      child: Container(
+        height: 50,
+          width: double.infinity,
+        child: Card(
+          child: Row(
+            children: [
+              SizedBox(
+                width: 5,
+              ),
+              Container(
+                height: 25,
+                width: 25,
+                decoration:
+                BoxDecoration(
+                  color: Colors.orange,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(child: Text('${index}')),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(locationAddlist[index],
+                style: const TextStyle(fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.normal),),
+          Image.asset(
+              fit: BoxFit.fill,
+              width: double.infinity,
+              height: 40,
+              'assets/images/cancel.png'),
+            ],
+          ),
+        ),
+
+      ),
+
+    );
   }
 }
 

@@ -33,7 +33,7 @@ class _MySearchLocationState extends State<MySearchLocation> {
          print('placeId:::::------${placeId}');
          print('fullJSON:::::------${fullJSON}');
 
-          Navigator.pop(context, fullJSON.toString());
+          Navigator.pop(context, description);
 
         },
       ),
