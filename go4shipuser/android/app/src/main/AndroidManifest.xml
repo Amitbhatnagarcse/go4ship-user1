@@ -2,7 +2,7 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="go4shipuser"
+        android:label="Go4Ship"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

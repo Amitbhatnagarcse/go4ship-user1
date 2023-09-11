@@ -18,6 +18,7 @@ class CategoryIcons extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Column(children: [
+
         Container(
             height: 100,
             width: 110,

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go4shipuser/FCMClasses/notification_service.dart';
@@ -5,6 +6,9 @@ import 'package:go4shipuser/dashboard/dashboard.dart';
 import 'package:go4shipuser/login_register/register_screen.dart';
 
 import '../constant/AppColor.dart';
+import '../constant/AppUrl.dart';
+import '../constant/DialogUtils.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,13 +18,16 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   NotificationServices notificationServices = NotificationServices();
-
+  TextEditingController _phonecontroller = TextEditingController();
+  TextEditingController _passwordcontroller= TextEditingController();
+  var fcmtoken ='';
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     notificationServices.requestNotificationPermission();
     notificationServices.getToken().then((value) {
+      fcmtoken = value;
       print('Device token');
       print(value);
     });
@@ -72,6 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Padding(
                     padding: EdgeInsets.all(10),
                     child: TextField(
+                      controller: _phonecontroller,
                       maxLength: 10,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
@@ -85,6 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Padding(
                     padding: EdgeInsets.all(10),
                     child: TextField(
+                      controller: _passwordcontroller,
                       obscureText: true,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
@@ -103,8 +112,11 @@ class _LoginScreenState extends State<LoginScreen> {
             GestureDetector(
               onTap: () {
 
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => DashboardScreen()));
+               ValidData();
+                //BaseflowPluginExample();
+
+
+
               },
               child: Container(
                 width: 150,
@@ -146,5 +158,59 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void getLoginData() async {
+    print('emial${_phonecontroller.text.toString()}');
+    print('password${_passwordcontroller.text.toString()}');
+    print('FCM_TOKEN${fcmtoken}');
+    try {
+      FormData formData = FormData.fromMap({
+
+        AppConstants.UMAIL: _phonecontroller.text.toString(),
+        AppConstants.UPWDd: _passwordcontroller.text.toString(),
+        AppConstants.FCM_TOKEN: fcmtoken,
+      });
+      //response = await dio.post("/info", data: formData);
+     // print(“Response FormData :: ${formData}”);
+
+      var response =
+      await Dio().post(AppConstants.app_base_url + AppConstants.USERLOGIN_URL,data: formData);
+      if (response.statusCode == 200) {
+        setState(() {
+          //print('print lenth${response.data['result'][0]['cabtypes']}');
+          //cablist = response.data['result'][0]['cabtypes'] as List;
+
+          var resut= response.data['result'][0]['Result'];
+          print('print response${resut}');
+          if(resut=='Login success'){
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+          }else{
+            print('Please Enter Valid Details');
+          }
+
+
+          // var recordsList = response.data["cabtype"];
+          // print('print cabtype......................${response.data['cabtypes']}');
+        });
+      }
+       print(response);
+    } catch (e) {
+      print(e);
+    }
+  }
+  void ValidData(){
+    if(_phonecontroller.text.toString().isEmpty){
+      DialogUtils.showCustomDialog(context, message: 'Please enter phone no.');
+    // MyToast.getToast('Please enter phone no.');
+    } else if(_phonecontroller.text.toString().length<10){
+      DialogUtils.showCustomDialog(context, message: 'Please enter 10 digit phone no.');
+      // MyToast.getToast('Please enter phone no.');
+    }else if(_passwordcontroller.text.toString().isEmpty){
+      DialogUtils.showCustomDialog(context, message: 'Please enter password ');
+     // MyToast.getToast('Please enter password ');
+    }else{
+      getLoginData();
+    }
   }
 }

@@ -19,23 +19,25 @@ class _MySearchLocationState extends State<MySearchLocation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar( title: Text('Search'),),
-      body: SearchLocation(apiKey: 'AIzaSyDykH9xQyiVNxoaLIMQyIz7Nk--gOZD-8w',
-        country: 'IN',
-        language: 'en',
-        onSelected: (Place place) async {
-          final description = await place.description;
-          final geolocation = await place.geolocation;
-          final placeId = await place.placeId;
-          final fullJSON = await place.fullJSON;
+      body: SingleChildScrollView(
+        child: SearchLocation(apiKey: 'AIzaSyDykH9xQyiVNxoaLIMQyIz7Nk--gOZD-8w',
+          country: 'IN',
+          language: 'en',
+          onSelected: (Place place) async {
+            final description = await place.description;
+            final geolocation = await place.geolocation;
+            final placeId = await place.placeId;
+            final fullJSON = await place.fullJSON;
 
-         print('description:::::------${description}');
-         print('latlong:::::------${geolocation}');
-         print('placeId:::::------${placeId}');
-         print('fullJSON:::::------${fullJSON}');
+            print('description:::::------${description}');
+            print('latlong:::::------${geolocation}');
+            print('placeId:::::------${placeId}');
+            print('fullJSON:::::------${fullJSON}');
 
-          Navigator.pop(context, description);
+            Navigator.pop(context, description);
 
-        },
+          },
+        ),
       ),
     );
   }

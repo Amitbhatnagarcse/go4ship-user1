@@ -29,11 +29,11 @@ class _RateCardState extends State<RateCard> {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.all(8),
               child: Row(
                 children: [
                   Image.asset(
-                      width: 35, height: 35, 'assets/images/map_location.png'),
+                      width: 25, height: 25, 'assets/images/map_location.png'),
                   Column(
                     children: [
                       Container(
@@ -46,7 +46,7 @@ class _RateCardState extends State<RateCard> {
                       Container(
                         margin: EdgeInsets.only(left: 20),
                         padding: EdgeInsets.only(left: 20),
-                        width: 300,
+                        width: 225,
                         color: Colors.grey.shade200,
                         child: DropdownButton(
                           value: dropdownValue,
@@ -78,7 +78,7 @@ class _RateCardState extends State<RateCard> {
               heightFactor: 1.5,
               child: Text(
                   style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 16,
                       color: Colors.blue,
                       fontWeight: FontWeight.bold),
                   '  REGULAR'),
@@ -96,7 +96,7 @@ class _RateCardState extends State<RateCard> {
                         color: ColorConstants.AppColorDark,
                         borderRadius: BorderRadius.all(Radius.circular(20))),
                     child: Image.asset(
-                        height: 50, width: 50, 'assets/images/black_car.png')),
+                        height: 45, width: 45, 'assets/images/black_car.png')),
                 Text(
                     style: TextStyle(
                         fontSize: 20,
@@ -116,7 +116,7 @@ class _RateCardState extends State<RateCard> {
               margin: EdgeInsets.only(top: 10),
               child: Text(
                   style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 16,
                       color: Colors.blue,
                       fontWeight: FontWeight.bold),
                   '  Total Fair'),
