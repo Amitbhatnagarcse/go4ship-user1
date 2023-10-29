@@ -6,6 +6,7 @@ class AppConstants {
   static const supportlist_Api = "faq.php";
   static const USERREG_URL = "register.php";
   static const USERLOGIN_URL = "login.php";
+  static const CITYLIST_URL = "citylist.php";
 
 
 
@@ -14,6 +15,7 @@ class AppConstants {
   static const UMAIL = "email";
   static const UPWDd = "pwd";
   static const FCM_TOKEN="fcm_token";
+  static const STATE="state";
 
 
 }

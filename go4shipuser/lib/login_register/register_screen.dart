@@ -1,9 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go4shipuser/login_register/login_screen.dart';
 import 'package:go4shipuser/FCMClasses/notification_service.dart';
 
 import '../constant/AppColor.dart';
+import '../constant/AppUrl.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -13,8 +15,10 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  NotificationServices notificationServices = NotificationServices();
 
+
+  NotificationServices notificationServices = NotificationServices();
+  List city_list = [];
   @override
   void initState() {
     // TODO: implement initState
@@ -147,6 +151,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(
                   height: 25,
                 ),
+
+                Container(
+                  margin: EdgeInsets.only(left: 20),
+                  padding: EdgeInsets.only(left: 20),
+                  width: 225,
+                  color: Colors.grey.shade200,
+                 /* child: DropdownButton(
+                    value: dropdownValue,
+                    items: city_list
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String? value) {
+                      // This is called when the user selects an item.
+                      setState(() {
+                        dropdownValue = value!;
+                      });
+                    },
+                  ),*/
+                ),
+
+
                 Container(
                   child: Padding(
                     padding: EdgeInsets.all(6),
@@ -178,7 +207,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   color: ColorConstants.AppColorDark,
                 ),
                 child: Center(child: Text(style: TextStyle(fontWeight: FontWeight.bold, color:Colors.white,fontSize: 18),
-                    'Login')),
+                    'Register')),
               ),
             ),
             SizedBox(
@@ -210,5 +239,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       ),
     );
+  }
+
+  void getCityList() async {
+
+    try {
+      FormData formData = FormData.fromMap({
+
+        AppConstants.STATE: '2853',
+
+      });
+
+      var response =
+      await Dio().post(AppConstants.app_base_url + AppConstants.CITYLIST_URL,data: formData);
+      if (response.statusCode == 200) {
+        setState(() {
+
+          var resut= response.data['result'][0]['Result'];
+          print('print response${resut}');
+          //city_list=resut.
+        });
+      }
+      print(response);
+    } catch (e) {
+      print(e);
+    }
   }
 }
