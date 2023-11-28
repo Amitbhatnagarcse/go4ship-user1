@@ -16,7 +16,6 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
 
-
   NotificationServices notificationServices = NotificationServices();
   List city_list = [];
   @override

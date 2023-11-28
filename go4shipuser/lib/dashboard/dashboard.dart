@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go4shipuser/confirmRideScreen/confirm_screen.dart';
 
 import 'package:go4shipuser/constant/AppColor.dart';
 import 'package:go4shipuser/dashboard/Model/CabListModel.dart';
@@ -274,10 +275,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                     /* Navigator.push(context,
                         MaterialPageRoute(builder: (context) => MySearchLocation()));*/
-                    Navigator.push( context, MaterialPageRoute( builder: (context) => MySearchLocation()), ).then((value) => setState(() {
-                     print('statechange1$value');
 
-                      locationAddlist.add('${value}');
+                    Navigator.push( context, MaterialPageRoute( builder: (context) => MySearchLocation()), ).then((value) => setState(() {
+                     print('statechange1------$value');
+
+                     if(value != null){
+                       locationAddlist.add('${value}');
+                     }
+
+
 
                     }));
 
@@ -343,8 +349,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         MaterialPageRoute(builder: (context) => MySearchLocation()));*/
                         Navigator.push( context, MaterialPageRoute( builder: (context) => MySearchLocation()), ).then((value) => setState(() {
                           print('statechange1$value');
+if(value!= null){
+  locationAddlist.add('${value}');
 
-                          locationAddlist.add('${value}');
+}
 
                         }));
 
@@ -404,7 +412,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     Expanded(
                       child: GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ConfirmScreen()));
+                          },
                           child: Container(
                             height: 50,
                             color: Colors.black,
@@ -700,7 +714,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   color: Colors.orange,
                   shape: BoxShape.circle,
                 ),
-                child: Center(child: Text('${index}')),
+                child: Center(child: Text('${index+1}')),
               ),
               SizedBox(
                 width: 10,
