@@ -18,6 +18,7 @@ class _MySearchLocationState extends State<MySearchLocation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar( title: Text('Search'),),
       body: SingleChildScrollView(
         child: SearchLocation(apiKey: 'AIzaSyDykH9xQyiVNxoaLIMQyIz7Nk--gOZD-8w',

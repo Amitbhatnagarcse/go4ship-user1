@@ -16,29 +16,40 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   void _onMapCreated(GoogleMapController controller) {
     myController = controller;
   }
+
   @override
   void dispose() {
-    Navigator.pop(context);
+
     myController.dispose();
     // TODO: implement dispose
     super.dispose();
   }
+
+  Future<bool> pop() async {
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        body:  GoogleMap(
-          myLocationButtonEnabled: false,
-          zoomControlsEnabled: false,
-          markers: Set<Marker>.of(_markers),
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: _center,
-            zoom: 14.0,
-          ),
+      home: WillPopScope(
+        onWillPop: pop,
+        child: Scaffold(
+        body: Stack(
+          children: <Widget>[
+
+            GoogleMap(
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              markers: Set<Marker>.of(_markers),
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target: _center,
+                zoom: 14.0,
+              ),
 
 
-          /*   polylines: {
+              /*   polylines: {
                 Polyline(
                     polylineId: PolylineId('route'),
                     color: Colors.blue,
@@ -50,15 +61,21 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                     ])
               },*/
 
-          /*markers: {
+              /*markers: {
                 if (origin != null) origin,
                 if (destination != null) destination
               },
               onLongPress: _addmarker,*/
-        ),
+
+            ),
+          ],
+        )
+      ),
+
       ),
     );
   }
+
   final List<Marker> _markers = <Marker>[
     Marker(
         markerId: MarkerId('1'),

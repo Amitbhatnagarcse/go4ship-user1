@@ -413,8 +413,7 @@ if(value!= null){
                     Expanded(
                       child: GestureDetector(
                           onTap: () {
-
-                            Navigator.pushReplacement(
+                            Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ConfirmScreen()));
