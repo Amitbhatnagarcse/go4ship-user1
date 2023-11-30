@@ -42,12 +42,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List cablist = [];
   List locationAddlist = [];
   int selectedindex = 0;
+
   //var cablistdata;
   String? _currentAddress;
   Position? _currentPosition;
+  String? cabid;
+
   void _onMapCreated(GoogleMapController controller) {
     myController = controller;
   }
+
   //List<String> youList=['1,'2','3','4'];
   @override
   Widget build(BuildContext context) {
@@ -179,7 +183,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       leading: Icon(Icons.logout, color: ColorConstants.black),
                       title: Text('Logout'),
                       onTap: () {
-                       // Navigator.pop(context); // Close the drawer
+                        // Navigator.pop(context); // Close the drawer
 
                         // Add navigation logic here
                       },
@@ -206,8 +210,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 zoom: 14.0,
               ),
 
-
-           /*   polylines: {
+              /*   polylines: {
                 Polyline(
                     polylineId: PolylineId('route'),
                     color: Colors.blue,
@@ -237,28 +240,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       itemCount: getLength(),
                       itemBuilder: (BuildContext context, int index) {
                         return GestureDetector(
-                          onTap: (){
-
-                            setState(() =>
-                            selectedindex=index);
+                          onTap: () {
+                            setState(() => selectedindex = index);
+                            cabid = cablist[index]['id'];
+                           // print('cabid_Click${cablist[index]['id']}');
                             swapitems(selectedIndex);
-                            selectedIndex =0;
-                                //swapitems(selectedindex),
+                            selectedIndex = 0;
+                            //cabid = cablist[index]['id'];
+                            //print('cabid_Click${cablist[index]['id']}');
+
+                            //swapitems(selectedindex),
                             //selectedindex=0,
                             //_selected[index] = !_selected[index]);
                           },
-
-
-                          child:  CategoryIcons(
-                            iconColor: selectedindex==index?ColorConstants.AppColorLightShadow:Colors.white,
+                          child: CategoryIcons(
+                            iconColor: selectedindex == index
+                                ? ColorConstants.AppColorLightShadow
+                                : Colors.white,
                             title: cablist[index]['cabtype'],
                             icon: cablist[index]['logo_url'],
-
                           ),
                         );
-
                       },
-
                     )),
                 /*     Container(
                   margin: EdgeInsets.only(left: 12, right: 12, top: 5),
@@ -270,31 +273,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     // list item builder
                     itemBuilder: _itemBuilder,
                   )),*/
+
                 GestureDetector(
                   onTap: () async {
-
                     /* Navigator.push(context,
                         MaterialPageRoute(builder: (context) => MySearchLocation()));*/
 
-                    Navigator.push( context, MaterialPageRoute( builder: (context) => MySearchLocation()), ).then((value) => setState(() {
-                     print('statechange1------$value');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MySearchLocation()),
+                    ).then((value) => setState(() {
+                          print('statechange1------$value');
 
-                     if(value != null){
-                       locationAddlist.add('${value}');
-                     }
+                          if (value != null) {
+                            locationAddlist.add('${value}');
+                          }
+                        }));
 
-
-
-                    }));
-
-                   /* final result = await Navigator.push(
+                    /* final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => MySearchLocation(),
                         )
                     );*/
 
-                   /* setState(() async {
+                    /* setState(() async {
                       //print('resultBack;------------${result}');
                       // text = result;
                       //locationAddlist.add( await result.geolocation);
@@ -306,7 +310,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       //myController.animateCamera(CameraUpdate.newLatLngBounds(geolocation.bounds, 0));
                     });*/
                   },
-                  child:  Container(
+                  child: Container(
                       width: double.infinity,
                       margin: EdgeInsets.only(left: 12, right: 12, top: 5),
                       color: Colors.white,
@@ -315,13 +319,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         children: [
                           Expanded(
                               child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Container(
-                                  margin: EdgeInsets.only(left: 10),
-                                  child: Image.asset(
-                                      height: 25, 'assets/images/tarck_others.png'),
-                                ),
-                              )),
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10),
+                              child: Image.asset(
+                                  height: 25, 'assets/images/tarck_others.png'),
+                            ),
+                          )),
                           Expanded(
                             child: Align(
                               alignment: Alignment.centerLeft,
@@ -330,32 +334,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           Expanded(
                               child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Container(
-                                  margin: EdgeInsets.only(right: 10),
-                                  child: Image.asset(
-                                      height: 20, 'assets/images/map_location.png'),
-                                ),
-                              )),
+                            alignment: Alignment.centerRight,
+                            child: Container(
+                              margin: EdgeInsets.only(right: 10),
+                              child: Image.asset(
+                                  height: 20, 'assets/images/map_location.png'),
+                            ),
+                          )),
                         ],
                       )),
                 ),
-
                 Align(
                     alignment: Alignment.topRight,
                     child: GestureDetector(
                       onTap: () async {
                         /* Navigator.push(context,
                         MaterialPageRoute(builder: (context) => MySearchLocation()));*/
-                        Navigator.push( context, MaterialPageRoute( builder: (context) => MySearchLocation()), ).then((value) => setState(() {
-                          print('statechange1$value');
-if(value!= null){
-  locationAddlist.add('${value}');
-
-}
-
-                        }));
-
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MySearchLocation()),
+                        ).then((value) => setState(() {
+                              print('statechange1$value');
+                              if (value != null) {
+                                locationAddlist.add('${value}');
+                              }
+                            }));
                       },
                       child: Container(
                         margin: EdgeInsets.only(right: 12, top: 5),
@@ -391,7 +395,7 @@ if(value!= null){
                     Expanded(
                         child: GestureDetector(
                       onTap: () {
-                       // openAlert();
+                        // openAlert();
                       },
                       child: Container(
                         height: 50,
@@ -416,7 +420,7 @@ if(value!= null){
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ConfirmScreen()));
+                                    builder: (context) => ConfirmScreen(cabid: cabid.toString(),)));
                           },
                           child: Container(
                             height: 50,
@@ -537,20 +541,17 @@ if(value!= null){
     getData();
     _getCurrentPosition();
 
-
     getUserCurrentLocation().then((value) async {
-      print(value.latitude.toString() +" "+value.longitude.toString());
+      print(value.latitude.toString() + " " + value.longitude.toString());
 
       // marker added for current users location
-      _markers.add(
-          Marker(
-            markerId: MarkerId("2"),
-            position: LatLng(value.latitude, value.longitude),
-            infoWindow: InfoWindow(
-              title: 'My Current Location',
-            ),
-          )
-      );
+      _markers.add(Marker(
+        markerId: MarkerId("2"),
+        position: LatLng(value.latitude, value.longitude),
+        infoWindow: InfoWindow(
+          title: 'My Current Location',
+        ),
+      ));
 
       // specified current users location
       CameraPosition cameraPosition = new CameraPosition(
@@ -560,8 +561,7 @@ if(value!= null){
 
       final GoogleMapController controller = await _controllerCompleter.future;
       controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-      setState(() {
-      });
+      setState(() {});
     });
     //getCabList();
   }
@@ -612,6 +612,10 @@ if(value!= null){
         print('print list inner');
         cablist = resBody['result'];
         print('print list inner${cablist}');
+
+
+
+       // cabid = cabid
       } else {
         //reLoginDialog();
       }
@@ -713,7 +717,7 @@ if(value!= null){
                   color: Colors.orange,
                   shape: BoxShape.circle,
                 ),
-                child: Center(child: Text('${index+1}')),
+                child: Center(child: Text('${index + 1}')),
               ),
               SizedBox(
                 width: 10,
@@ -797,26 +801,24 @@ if(value!= null){
 
   Future<void> _getAddressFromLatLng(Position position) async {
     await placemarkFromCoordinates(
-        _currentPosition!.latitude, _currentPosition!.longitude)
+            _currentPosition!.latitude, _currentPosition!.longitude)
         .then((List<Placemark> placemarks) {
       Placemark place = placemarks[0];
       setState(() {
         _currentAddress =
-        '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
+            '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
       });
     }).catchError((e) {
       debugPrint(e);
     });
   }
 
-  void swapitems(int index)
-  {
+  void swapitems(int index) {
     String temp;
-    temp=cablist[index];
-    cablist[index]=cablist[0];
-    cablist[0]=temp;
+    temp = cablist[index];
+    cablist[index] = cablist[0];
+    cablist[0] = temp;
   }
-
 
   final List<Marker> _markers = <Marker>[
     Marker(
@@ -824,16 +826,16 @@ if(value!= null){
         position: LatLng(26.7915, 75.2100),
         infoWindow: InfoWindow(
           title: 'My Position',
-        )
-    ),
+        )),
   ];
 
   // created method for getting user current location
   Future<Position> getUserCurrentLocation() async {
-    await Geolocator.requestPermission().then((value){
-    }).onError((error, stackTrace) async {
+    await Geolocator.requestPermission()
+        .then((value) {})
+        .onError((error, stackTrace) async {
       await Geolocator.requestPermission();
-      print("ERROR"+error.toString());
+      print("ERROR" + error.toString());
     });
     return await Geolocator.getCurrentPosition();
   }

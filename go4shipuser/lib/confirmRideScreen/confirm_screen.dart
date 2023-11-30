@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ConfirmScreen extends StatefulWidget {
-  const ConfirmScreen({super.key});
+  final String cabid;
+  const ConfirmScreen({Key? key,
+    required this.cabid,
+
+  }) : super(key: key);
+
 
   @override
   State<ConfirmScreen> createState() => _ConfirmScreenState();
@@ -27,7 +32,14 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   Future<bool> pop() async {
     return true;
   }
+@override
+  void initState() {
+  print('cabid////////${widget.cabid}');
+    // TODO: implement initState
+    super.initState();
 
+
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
