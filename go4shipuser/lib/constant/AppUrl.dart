@@ -7,6 +7,7 @@ class AppConstants {
   static const USERREG_URL = "register.php";
   static const USERLOGIN_URL = "login.php";
   static const CITYLIST_URL = "citylist.php";
+  static const PackageLIST_URL = "package.php";
 
 
 
@@ -16,6 +17,7 @@ class AppConstants {
   static const UPWDd = "pwd";
   static const FCM_TOKEN="fcm_token";
   static const STATE="state";
+  static const CABID="cabid";
 
 
 }

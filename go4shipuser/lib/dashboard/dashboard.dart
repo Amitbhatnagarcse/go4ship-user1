@@ -243,8 +243,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           onTap: () {
                             setState(() => selectedindex = index);
                             cabid = cablist[index]['id'];
-                           // print('cabid_Click${cablist[index]['id']}');
-                            swapitems(selectedIndex);
+                            print('cabid_Click${cablist[index]['id']}');
+                            //swapitems(selectedIndex);
                             selectedIndex = 0;
                             //cabid = cablist[index]['id'];
                             //print('cabid_Click${cablist[index]['id']}');
