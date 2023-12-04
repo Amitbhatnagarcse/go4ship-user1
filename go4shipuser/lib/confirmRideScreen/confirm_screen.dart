@@ -22,10 +22,12 @@ class ConfirmScreen extends StatefulWidget {
 }
 
 class _ConfirmScreenState extends State<ConfirmScreen> {
+  TextEditingController _changePackagetext = TextEditingController();
+  var _changepackText = 'Select Package';
   ScrollController? _controller;
   late GoogleMapController myController;
   List packagelist = [];
-  
+
   final LatLng _center = const LatLng(26.7915, 75.2100);
 
   void _onMapCreated(GoogleMapController controller) {
@@ -46,6 +48,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   @override
   void initState() {
     print('cabid////////${widget.cabid}');
+    _changePackagetext.text = _changepackText;
     getData();
     // TODO: implement initState
     super.initState();
@@ -125,7 +128,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () {
-                                     showModalSheet(context);
+                                    showModalSheet(context);
                                   },
                                   child: Container(
                                       width: 150,
@@ -142,7 +145,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                                                 BorderRadius.circular(5)),
                                         height: 25,
                                         child: Center(
-                                            child: Text('Select Package')),
+                                            child: Text('${_changePackagetext.text}')),
                                       )),
                                 ),
                               ),
@@ -232,17 +235,17 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     print('cabid_confirm${widget.cabid}');
 
     try {
-
       FormData formData = FormData.fromMap({
         AppConstants.CABID: widget.cabid,
       });
 
-      var response =
-      await Dio().post(AppConstants.app_base_url + AppConstants.PackageLIST_URL,data: formData);
+      var response = await Dio().post(
+          AppConstants.app_base_url + AppConstants.PackageLIST_URL,
+          data: formData);
       if (response.statusCode == 200) {
         setState(() {
           //print('print lenth${response.data['result'][0]['cabtypes']}');
-          packagelist = response.data['result'][0]['cabtypes'] as List;
+          packagelist = response.data['result'] as List;
           print('print lenth${packagelist}');
           // var recordsList = response.data["cabtype"];
           // print('print cabtype......................${response.data['cabtypes']}');
@@ -253,7 +256,6 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
       print(e);
     }
   }
-
 
   void getPackageList() async {
     print('cabid_confirm${widget.cabid}');
@@ -294,7 +296,6 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     }
   }
 
-  //Show Help Desk
   void showModalSheet(BuildContext context) {
     showModalBottomSheet<void>(
         isScrollControlled: true,
@@ -332,7 +333,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                       child: Container(
                           child: Center(
                         child: Text(
-                          'Help Desk',
+                         'Choose Package',
                           textAlign: TextAlign.left,
                           style: TextStyle(color: Colors.white, fontSize: 13),
                         ),
@@ -343,35 +344,13 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
               ),
             ),
           ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom:
-                    BorderSide(width: 2.0, color: ColorConstants.AppColorLight),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'कार्यालय का समय (${''})',
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: ColorConstants.AppColorPrimary,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ),
-
           _helpItemBuilder()
         ],
       ),
     );
   }
- Widget _helpItemBuilder(){
+
+  Widget _helpItemBuilder() {
     return MediaQuery.removePadding(
         context: context,
         removeTop: true,
@@ -380,55 +359,78 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
             itemCount: getHelpLength(),
             itemBuilder: _helpitemBuilder,
             physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true
-        )
-    );
+            shrinkWrap: true));
   }
+
   Widget _helpitemBuilder(BuildContext context, int index) {
     return InkWell(
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(width: 2.0, color: ColorConstants.AppColorDark),
-          ),
-          color: (index % 2 == 0) ? Colors.white :ColorConstants.AppColorDark,
-        ),
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                    child: Container(
-                      //  color: Colors.red,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          packagelist[index]['price'].toString(),
-                          style: TextStyle(
-                              fontSize: 13,
-                              color: ColorConstants.AppColorPrimary,
-                              fontWeight: FontWeight.normal),
-                        ),
-                      ),
-                    )),
-                Expanded(child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('${packagelist == null ? "" : packagelist[index]['hour'].toString()}',
-                    style: TextStyle(fontSize: 13,color:Colors.black,fontWeight: FontWeight.normal),),
-                ))
-              ],
+      child:GestureDetector(
+        onTap: () {
+          setState(() {
+
+            _changePackagetext.text = packagelist[index]['hour'].toString() +
+                ' Hour ' +
+                packagelist[index]['km'].toString() +
+                ' KM ' +
+                packagelist[index]['price'].toString() +
+                ' INR';
+            Navigator.of(context).pop();
+          });
+
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(width: 2.0, color: ColorConstants.AppColorDark),
             ),
-          ],
-        ),
-      ),
+            // color: (index % 2 == 0) ? Colors.white :ColorConstants.AppColorDark,
+          ),
+          child: Column(
+            children: [
+              Container(
+                //  color: Colors.red,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    packagelist[index]['hour'].toString() +
+                        ' Hour ' +
+                        packagelist[index]['km'].toString() +
+                        ' KM ' +
+                        packagelist[index]['price'].toString() +
+                        ' INR',
+                    style: TextStyle(
+                        fontSize: 13,
+                        color: ColorConstants.black,
+                        fontWeight: FontWeight.normal),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                //  holder.additional.setText("Additional charges for extra distance : "+currency+" "+ride.getAdddist()+"/Km"+
+                //         "\nextra time : "+currency+" "+ride.getAddtime()+"/Hr");
+                child: Text(
+                  'Additional charges for extra distance : INR  ${packagelist == null ? "" : packagelist[index]['charge_for_additional_dist'].toString() + '/KM' + '\nextra time : ' + ' INR ' + packagelist[index]['charge_for_additional_time'].toString()}',
+                  style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.blue,
+                      fontWeight: FontWeight.normal),
+                ),
+              ),
+            ],
+          ),
+
+        ) ,
+      )
+
+
     );
   }
 
   int getHelpLength() {
-    if(packagelist.isNotEmpty){
+    if (packagelist.isNotEmpty) {
       return packagelist.length;
-    }else{
+    } else {
       return 0;
     }
   }
