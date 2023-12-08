@@ -64,7 +64,6 @@ class FadeIn extends State<SplashScreen> {
 
              FadeAnimatedText('Go4Ship',
                  duration: Duration(seconds: 4),fadeOutBegin: 0.9,fadeInEnd: 0.7),
-
            ],
          ),
        ),

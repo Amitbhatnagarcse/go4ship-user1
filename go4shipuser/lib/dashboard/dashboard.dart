@@ -47,6 +47,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String? _currentAddress;
   Position? _currentPosition;
   String? cabid;
+  String? HeaderText;
 
   void _onMapCreated(GoogleMapController controller) {
     myController = controller;
@@ -243,6 +244,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           onTap: () {
                             setState(() => selectedindex = index);
                             cabid = cablist[index]['id'];
+                            HeaderText = cablist[index]['cabtype'];
                             print('cabid_Click${cablist[index]['id']}');
                             //swapitems(selectedIndex);
                             selectedIndex = 0;
@@ -420,7 +422,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ConfirmScreen(cabid: cabid.toString(),)));
+                                    builder: (context) => ConfirmScreen(cabid: cabid.toString(),headertext: HeaderText.toString(),)));
                           },
                           child: Container(
                             height: 50,

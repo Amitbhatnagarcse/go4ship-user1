@@ -11,10 +11,12 @@ import '../constant/AppUrl.dart';
 
 class ConfirmScreen extends StatefulWidget {
   final String cabid;
+  final String headertext;
 
   const ConfirmScreen({
     Key? key,
     required this.cabid,
+    required this.headertext,
   }) : super(key: key);
 
   @override
@@ -24,6 +26,7 @@ class ConfirmScreen extends StatefulWidget {
 class _ConfirmScreenState extends State<ConfirmScreen> {
   TextEditingController _changePackagetext = TextEditingController();
   var _changepackText = 'Select Package';
+
   ScrollController? _controller;
   late GoogleMapController myController;
   List packagelist = [];
@@ -60,6 +63,12 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
       home: WillPopScope(
         onWillPop: pop,
         child: Scaffold(
+            appBar: AppBar(
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                title: Text(widget.headertext, style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: Colors.black),), backgroundColor: ColorConstants.AppColorDark),
             body: Stack(
           children: <Widget>[
             GoogleMap(
