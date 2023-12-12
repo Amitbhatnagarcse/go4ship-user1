@@ -8,6 +8,7 @@ class AppConstants {
   static const USERLOGIN_URL = "login.php";
   static const CITYLIST_URL = "citylist.php";
   static const PackageLIST_URL = "package.php";
+  static const EditProfilw_URL = "editprofile.php";
 
 
 
@@ -18,6 +19,15 @@ class AppConstants {
   static const FCM_TOKEN="fcm_token";
   static const STATE="state";
   static const CABID="cabid";
+  static const ULNAME   ="lname";
+  static const UFNAME   ="fname";
+  static const UPHONENO="phone";
 
+  static const Uname="name";
+  static const lname="lname";
+  static const UADDR = "address";
+  static const CITY = "city";
+  static const COUNTRY = "country";
+  static const ZIP = "zip";
 
 }

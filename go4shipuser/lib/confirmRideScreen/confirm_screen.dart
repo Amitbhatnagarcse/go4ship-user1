@@ -100,7 +100,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
               onLongPress: _addmarker,*/
             ),
             Container(
-              margin: EdgeInsets.only(top: 30),
+              margin: EdgeInsets.only(top:3),
               height: 50,
               color: Colors.white,
               child: Row(
@@ -443,4 +443,6 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
       return 0;
     }
   }
+
+
 }

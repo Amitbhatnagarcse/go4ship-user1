@@ -196,7 +196,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
         appBar: AppBar(
-          title: Text('Flutter Maps Demo'),
+          iconTheme: IconThemeData(color: Colors.black),
+          title: Text(style: TextStyle(color: Colors.black),'Book Your Delivery'),
           backgroundColor: ColorConstants.AppColorDark,
         ),
         body: Stack(

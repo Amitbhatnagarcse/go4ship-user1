@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go4shipuser/FCMClasses/notification_service.dart';
 import 'package:go4shipuser/dashboard/dashboard.dart';
 import 'package:go4shipuser/login_register/register_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/AppColor.dart';
 import '../constant/AppUrl.dart';
@@ -21,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _phonecontroller = TextEditingController();
   TextEditingController _passwordcontroller= TextEditingController();
   var fcmtoken ='';
+  late SharedPreferences preferences;
   @override
   void initState() {
     // TODO: implement initState
@@ -164,6 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
     print('emial${_phonecontroller.text.toString()}');
     print('password${_passwordcontroller.text.toString()}');
     print('FCM_TOKEN${fcmtoken}');
+    preferences = await SharedPreferences.getInstance();
     try {
       FormData formData = FormData.fromMap({
 
@@ -184,6 +187,8 @@ class _LoginScreenState extends State<LoginScreen> {
           var resut= response.data['result'][0]['Result'];
           print('print response${resut}');
           if(resut=='Login success'){
+            preferences.setString("userid", response.data['result'][0]['userid']);
+            preferences.setString("uid", response.data['result'][0]['uid']);
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
           }else{
             print('Please Enter Valid Details');

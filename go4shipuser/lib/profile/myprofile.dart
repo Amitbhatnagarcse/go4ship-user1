@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go4shipuser/profile/editProfile.dart';
 
 import '../constant/AppColor.dart';
 
@@ -22,7 +23,17 @@ class _MyProfileState extends State<MyProfile> {
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title: Text('Profile'), backgroundColor: ColorConstants.AppColorDark),
+          title: Text('Profile'),
+          actions: [
+            IconButton(icon: Icon(Icons.edit), onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => EditProfile()));
+            }),
+          ],
+          backgroundColor: ColorConstants.AppColorDark),
+
       body: SingleChildScrollView(
         child: Column(
           children: [

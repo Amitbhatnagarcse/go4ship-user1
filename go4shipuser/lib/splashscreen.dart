@@ -3,20 +3,35 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go4shipuser/login_register/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constant/AppColor.dart';
+import 'dashboard/dashboard.dart';
 
 class SplashScreen extends StatefulWidget {
   @override State<StatefulWidget> createState() => FadeIn();}
 
 class FadeIn extends State<SplashScreen> {
+  late SharedPreferences preferences;
  late Timer _timer;
   FlutterLogoStyle _logoStyle = FlutterLogoStyle.markOnly;
+
   FadeIn() {
     _timer = new Timer(const Duration(seconds: 3), () {
-      setState(() {
+      setState(() async {
         _logoStyle = FlutterLogoStyle.horizontal;
-        Navigator.of(context).push(_createRoute());
+
+        preferences = await SharedPreferences.getInstance();
+        if(preferences.getString('userid') == null){
+          Navigator.of(context).push(_createRoute());
+        }else{
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DashboardScreen()));
+        }
+
+
       }); }); }
 
   @override Widget build(BuildContext context) {
@@ -98,6 +113,7 @@ class FadeIn extends State<SplashScreen> {
 
  Route _createRoute() {
    return PageRouteBuilder(
+
      pageBuilder: (context, animation, secondaryAnimation) => const LoginScreen(),
      transitionsBuilder: (context, animation, secondaryAnimation, child) {
        const begin = Offset(0.0, 1.0);
