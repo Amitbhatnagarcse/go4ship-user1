@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/AppColor.dart';
 import '../constant/AppUrl.dart';
@@ -24,6 +26,7 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController _statecontroller = TextEditingController();
   TextEditingController _citycontroller = TextEditingController();
   TextEditingController _zipcodecontroller = TextEditingController();
+  late SharedPreferences preferences;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -310,6 +313,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   void getUpdateProfile() async {
+    preferences = await SharedPreferences.getInstance();
     print('emial${_phonecontroller.text.toString()}');
    // print('password${_passwordcontroller.text.toString()}');
     //print('FCM_TOKEN${fcmtoken}');
@@ -326,6 +330,8 @@ class _EditProfileState extends State<EditProfile> {
         AppConstants.STATE: _statecontroller.text.toString(),
         AppConstants.CITY: _citycontroller.text.toString(),
         AppConstants.ZIP: _zipcodecontroller.text.toString(),
+        AppConstants.UserId: preferences.getString('userid'),
+        AppConstants.UKeyWord: 'email',
 
       });
       //response = await dio.post("/info", data: formData);
@@ -339,7 +345,23 @@ class _EditProfileState extends State<EditProfile> {
           //cablist = response.data['result'][0]['cabtypes'] as List;
 
           var resut= response.data['result'][0]['Result'];
-          print('print response${resut}');
+          print('print response${response.data['result'][0]['Result']}');
+          if(response.data['result'][0]['Result'] == 'Success'){
+            Fluttertoast.showToast(
+                msg: 'Your Profile is Updated',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.green,
+                textColor: Colors.white);
+            Navigator.pop(context);
+          }else{
+            Fluttertoast.showToast(
+                msg: 'Something went Wrong',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.red,
+                textColor: Colors.white);
+          }
          /* if(resut=='Login success'){
             preferences.setString("userid", response.data['result'][0]['userid']);
             preferences.setString("uid", response.data['result'][0]['uid']);
@@ -353,7 +375,7 @@ class _EditProfileState extends State<EditProfile> {
           // print('print cabtype......................${response.data['cabtypes']}');
         });
       }
-      print(response);
+     // print(response);
     } catch (e) {
       print(e);
     }

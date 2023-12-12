@@ -9,6 +9,7 @@ class AppConstants {
   static const CITYLIST_URL = "citylist.php";
   static const PackageLIST_URL = "package.php";
   static const EditProfilw_URL = "editprofile.php";
+  static const ViewProfile_URL = "viewprofile.php";
 
 
 
@@ -29,5 +30,7 @@ class AppConstants {
   static const CITY = "city";
   static const COUNTRY = "country";
   static const ZIP = "zip";
+  static const UKeyWord = "keyword";
+  static const UserId = "userid";
 
 }

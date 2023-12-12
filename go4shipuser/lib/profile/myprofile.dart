@@ -1,8 +1,12 @@
+
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go4shipuser/profile/editProfile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/AppColor.dart';
+import '../constant/AppUrl.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
@@ -14,7 +18,24 @@ class MyProfile extends StatefulWidget {
 class _MyProfileState extends State<MyProfile> {
   bool isSelected = false;
   bool isonswitch = true;
-
+  late SharedPreferences preferences;
+  TextEditingController _phonecontroller = TextEditingController();
+  TextEditingController _firstNameontroller = TextEditingController();
+  TextEditingController _lastNamecontroller = TextEditingController();
+  TextEditingController _emailcontroller = TextEditingController();
+  TextEditingController _addresscontroller = TextEditingController();
+  TextEditingController _countrycontroller = TextEditingController();
+  TextEditingController _statecontroller = TextEditingController();
+  TextEditingController _citycontroller = TextEditingController();
+  TextEditingController _zipcodecontroller = TextEditingController();
+  TextEditingController _refercodecontroller = TextEditingController();
+  List profilelist = [];
+  @override
+  void initState() {
+    getProfileData();
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,14 +62,15 @@ class _MyProfileState extends State<MyProfile> {
               child: Padding(
                 padding: EdgeInsets.all(10),
                 child: TextField(
+                  controller: _phonecontroller,
+                  enabled: false,
                   maxLength: 10,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       prefixIcon: Image.asset(
                           width: 20, height: 20, 'assets/images/phone.png'),
                       border: OutlineInputBorder(),
-                      labelText: 'Mobile no.',
-                      hintText: 'Enter valid 10 digit mobile no.'),
+                     ),
                 ),
               ),
             ),
@@ -56,12 +78,14 @@ class _MyProfileState extends State<MyProfile> {
               child: Padding(
                 padding: EdgeInsets.all(10),
                 child: TextField(
+                  controller: _firstNameontroller ,
+                  enabled: false,
                   decoration: InputDecoration(
                       prefixIcon: Image.asset(
                           width: 10, height: 10, 'assets/images/user.png'),
                       border: OutlineInputBorder(),
-                      labelText: 'Name',
-                      hintText: 'Enter your name'),
+
+                  ),
                 ),
               ),
             ),
@@ -69,6 +93,8 @@ class _MyProfileState extends State<MyProfile> {
               child: Padding(
                 padding: EdgeInsets.all(10),
                 child: TextField(
+                  controller: _emailcontroller,
+                  enabled: false,
                   decoration: InputDecoration(
                       prefixIcon: Image.asset(
                           width: 20, height: 20, 'assets/images/mail.png'),
@@ -86,51 +112,59 @@ class _MyProfileState extends State<MyProfile> {
                 child: Column(
                   children: [
                     TextField(
+                      controller: _addresscontroller,
+                      enabled: false,
                       decoration: InputDecoration(
                           prefixIcon: Image.asset(
                               width: 20,
                               height: 20,
                               'assets/images/address.png'),
-                          labelText: 'Address',
-                          hintText: 'Enter your address'),
+
+                      ),
                     ),
                     TextField(
+                      controller: _countrycontroller,
+                      enabled: false,
+                      decoration: InputDecoration(
+                          prefixIcon: Image.asset(
+                              width: 20,
+                              height: 20,
+                              'assets/images/address.png'),),
+                    ),
+                    TextField(
+                      controller: _statecontroller,
+                      enabled: false,
                       decoration: InputDecoration(
                           prefixIcon: Image.asset(
                               width: 20,
                               height: 20,
                               'assets/images/address.png'),
-                          labelText: 'Country',
-                          hintText: 'Enter your Country'),
+
+                          ),
                     ),
                     TextField(
+                      controller: _citycontroller,
+                      enabled: false,
                       decoration: InputDecoration(
                           prefixIcon: Image.asset(
                               width: 20,
                               height: 20,
                               'assets/images/address.png'),
-                          labelText: 'State',
-                          hintText: 'Enter your State'),
+                      ),
                     ),
                     TextField(
+                      controller: _zipcodecontroller,
+                      enabled: false,
                       decoration: InputDecoration(
                           prefixIcon: Image.asset(
                               width: 20,
                               height: 20,
                               'assets/images/address.png'),
-                          labelText: 'City',
-                          hintText: 'Enter your City'),
+                      ),
                     ),
                     TextField(
-                      decoration: InputDecoration(
-                          prefixIcon: Image.asset(
-                              width: 20,
-                              height: 20,
-                              'assets/images/address.png'),
-                          labelText: 'Zipcode',
-                          hintText: 'Enter your address'),
-                    ),
-                    TextField(
+                      controller: _refercodecontroller,
+                      enabled: false,
                       decoration: InputDecoration(
                           prefixIcon: Image.asset(
                               width: 20,
@@ -143,9 +177,12 @@ class _MyProfileState extends State<MyProfile> {
                 ),
               ),
             ),
-            Container(
+            Visibility(
+                visible: false,
+                child:   Container(
+
               decoration:
-                  BoxDecoration(border: Border.all(color: Colors.black)),
+              BoxDecoration(border: Border.all(color: Colors.black)),
               child: Padding(
                 padding: EdgeInsets.all(10),
                 child: Column(
@@ -274,10 +311,61 @@ class _MyProfileState extends State<MyProfile> {
                   ],
                 ),
               ),
-            ),
+            )),
           ],
         ),
       ),
     );
+  }
+
+  void getProfileData() async {
+    //print('emial${_phonecontroller.text.toString()}');
+
+    preferences = await SharedPreferences.getInstance();
+    try {
+      FormData formData = FormData.fromMap({
+
+        AppConstants.UserId: preferences.getString('userid'),
+  
+      });
+      //response = await dio.post("/info", data: formData);
+      // print(“Response FormData :: ${formData}”);
+
+      var response =
+      await Dio().post(AppConstants.app_base_url + AppConstants.ViewProfile_URL,data: formData);
+      if (response.statusCode == 200) {
+        setState(() {
+          //print('print lenth${response.data['result'][0]['cabtypes']}');
+          //cablist = response.data['result'][0]['cabtypes'] as List;
+
+          var resut= response.data['result'];
+          print('print response${resut}');
+          if(resut != null){
+
+           // profilelist = response.data['result'][0]['Result'] as List;
+            //print('print response${response.data['result'][0]['phone']}');
+            _phonecontroller.text = response.data['result'][0]['phone'];
+            _emailcontroller.text = response.data['result'][0]['email'];
+            _firstNameontroller.text = response.data['result'][0]['fname'] +' '+ ' '+response.data['result'][0]['lname'] ;
+            _addresscontroller.text = response.data['result'][0]['address'];
+            _countrycontroller.text = response.data['result'][0]['country'];
+            _statecontroller.text = response.data['result'][0]['state'];
+            _citycontroller.text = response.data['result'][0]['city'];
+            _zipcodecontroller.text = response.data['result'][0]['zip'];
+            _refercodecontroller.text = response.data['result'][0]['uid'];
+           // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+          }else{
+            print('Please Enter Valid Details');
+          }
+
+
+          // var recordsList = response.data["cabtype"];
+          // print('print cabtype......................${response.data['cabtypes']}');
+        });
+      }
+      print(response);
+    } catch (e) {
+      print(e);
+    }
   }
 }
