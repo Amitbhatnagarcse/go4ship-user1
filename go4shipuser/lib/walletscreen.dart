@@ -1,7 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constant/AppColor.dart';
+import 'constant/AppUrl.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -11,6 +14,14 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
+  late SharedPreferences preferences;
+
+  @override
+  void initState() {
+    getWalletData();
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -158,5 +169,50 @@ class _WalletScreenState extends State<WalletScreen> {
         ),
       ),
     );
+  }
+
+  void getWalletData() async {
+    //print('emial${_phonecontroller.text.toString()}');
+
+    preferences = await SharedPreferences.getInstance();
+    try {
+      FormData formData = FormData.fromMap({
+
+        AppConstants.UserId: preferences.getString('userid'),
+        AppConstants.ReferralCode: preferences.getString('uid'),
+
+      });
+      //response = await dio.post("/info", data: formData);
+      // print(“Response FormData :: ${formData}”);
+
+      var response =
+      await Dio().post(AppConstants.app_base_url + AppConstants.UserWallet_URL,data: formData);
+      if (response.statusCode == 200) {
+        setState(() {
+          //print('print lenth${response.data['result'][0]['cabtypes']}');
+          //cablist = response.data['result'][0]['cabtypes'] as List;
+
+          var resut= response.data['result'];
+          print('print response/////   ${response.data['result'][0]['referral']}');
+          print('print response////  ${response.data['result'][1]['info']}');
+          print('print response////  ${response.data['result'][2]['transaction']}');
+          if(resut != null){
+
+            //_phonecontroller.text = response.data['result'][0]['phone'];
+
+            // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+          }else{
+            print('Please Enter Valid Details');
+          }
+
+
+          // var recordsList = response.data["cabtype"];
+          // print('print cabtype......................${response.data['cabtypes']}');
+        });
+      }
+      print(response);
+    } catch (e) {
+      print(e);
+    }
   }
 }

@@ -10,6 +10,7 @@ class AppConstants {
   static const PackageLIST_URL = "package.php";
   static const EditProfilw_URL = "editprofile.php";
   static const ViewProfile_URL = "viewprofile.php";
+  static const UserWallet_URL = "user-wallet.php";
 
 
 
@@ -32,5 +33,6 @@ class AppConstants {
   static const ZIP = "zip";
   static const UKeyWord = "keyword";
   static const UserId = "userid";
+  static const ReferralCode = "referral_code";
 
 }
