@@ -15,7 +15,9 @@ class WalletScreen extends StatefulWidget {
 
 class _WalletScreenState extends State<WalletScreen> {
   late SharedPreferences preferences;
-
+  String refer_count='';
+  String refer_amount = '';
+  String wallet_balance = '';
   @override
   void initState() {
     getWalletData();
@@ -46,20 +48,39 @@ class _WalletScreenState extends State<WalletScreen> {
                       Expanded(
                           child: Card(
                             color: Colors.blue.shade100,
-                            child: Container(
-                              padding: EdgeInsets.all(10),
-                              height: 100,
-                              child: Text('Total Referral'),
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(10),
+                                  height: 50,
+                                  child: Text('Total Referral'),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.all(10),
+                                  height: 50,
+                                  child: Text(style: TextStyle(fontSize: 25),refer_count.toString()),
+                                ),
+                              ],
                             ),
                           )),
 
                       Expanded(
                           child: Card(
                             color: Colors.pinkAccent.shade100,
-                            child: Container(
-                              padding: EdgeInsets.all(10),
-                              height: 100,
-                              child: Text('Credits Earned'),
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(10),
+                                  height: 50,
+                                  child: Text('Credits Earned'),
+                                ),
+
+                                Container(
+                                  padding: EdgeInsets.all(10),
+                                  height: 50,
+                                  child: Text(style: TextStyle(fontSize: 25),refer_amount.toString()),
+                                ),
+                              ],
                             ),
                           )),
 
@@ -79,7 +100,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(style: TextStyle(fontWeight:FontWeight.bold,color: Colors.black),'Balance'),
-                    Center(child: Text('100'))
+                    Center(child: Text(style: TextStyle(fontSize: 25),wallet_balance))
                   ],
                 ),
               ),
@@ -172,7 +193,7 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   void getWalletData() async {
-    //print('emial${_phonecontroller.text.toString()}');
+
 
     preferences = await SharedPreferences.getInstance();
     try {
@@ -197,7 +218,10 @@ class _WalletScreenState extends State<WalletScreen> {
           print('print response////  ${response.data['result'][1]['info']}');
           print('print response////  ${response.data['result'][2]['transaction']}');
           if(resut != null){
-
+            print('print response////  ${response.data['result'][1]['info'][0]['refer_count'].toString()}');
+            refer_count = response.data['result'][1]['info'][0]['refer_count'].toString();
+            refer_amount = response.data['result'][1]['info'][0]['refer_amount'].toString();
+            wallet_balance = response.data['result'][1]['info'][0]['wallet_balance'].toString();
             //_phonecontroller.text = response.data['result'][0]['phone'];
 
             // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
