@@ -228,8 +228,6 @@ class _WalletScreenState extends State<WalletScreen> {
           }else{
             print('Please Enter Valid Details');
           }
-
-
           // var recordsList = response.data["cabtype"];
           // print('print cabtype......................${response.data['cabtypes']}');
         });
