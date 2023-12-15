@@ -11,6 +11,7 @@ class AppConstants {
   static const EditProfilw_URL = "editprofile.php";
   static const ViewProfile_URL = "viewprofile.php";
   static const UserWallet_URL = "user-wallet.php";
+  static const MyRides_URL = "myrides.php";
 
 
 

@@ -2,6 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:go4shipuser/profile/editProfile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -320,7 +321,10 @@ class _MyProfileState extends State<MyProfile> {
 
   void getProfileData() async {
     //print('emial${_phonecontroller.text.toString()}');
-
+    await EasyLoading.show(
+      status: 'loading...',
+      maskType: EasyLoadingMaskType.black,
+    );
     preferences = await SharedPreferences.getInstance();
     try {
       FormData formData = FormData.fromMap({
@@ -363,8 +367,10 @@ class _MyProfileState extends State<MyProfile> {
           // print('print cabtype......................${response.data['cabtypes']}');
         });
       }
+      EasyLoading.dismiss();
       print(response);
     } catch (e) {
+      EasyLoading.dismiss();
       print(e);
     }
   }

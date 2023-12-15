@@ -19,6 +19,7 @@ import 'package:search_map_location/search_map_location.dart';
 
 import 'package:share_plus/share_plus.dart';
 import '../constant/AppUrl.dart';
+import '../mybooking/MyBooking.dart';
 import '../profile/myprofile.dart';
 import 'category_icon.dart';
 
@@ -122,6 +123,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       title: Text('My Bookings'),
                       onTap: () {
                         //Navigator.pop(context); // Close the drawer
+
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>  MyBooking()));
 
                         // Add navigation logic here
                       },
