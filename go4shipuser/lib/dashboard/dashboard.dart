@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go4shipuser/confirmRideScreen/confirm_screen.dart';
@@ -49,12 +50,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Position? _currentPosition;
   String? cabid;
   String? HeaderText;
-
+  TextEditingController _deliveryLocation = TextEditingController();
   void _onMapCreated(GoogleMapController controller) {
     myController = controller;
   }
 
   //List<String> youList=['1,'2','3','4'];
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -296,7 +298,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           print('statechange1------$value');
 
                           if (value != null) {
-                            locationAddlist.add('${value}');
+
+                            _deliveryLocation.text = value;
+                            //locationAddlist.add('${value}');
                           }
                         }));
 
@@ -338,7 +342,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Expanded(
                             child: Align(
                               alignment: Alignment.centerLeft,
-                              child: Text('Delivery Location'),
+                             child: Text( _deliveryLocation.text),
+                             // child: Text(_deliveryLocation.text),
                             ),
                           ),
                           Expanded(
@@ -366,6 +371,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ).then((value) => setState(() {
                               print('statechange1$value');
                               if (value != null) {
+
                                 locationAddlist.add('${value}');
                               }
                             }));
@@ -426,10 +432,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Expanded(
                       child: GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ConfirmScreen(cabid: cabid.toString(),headertext: HeaderText.toString(),)));
+                            if(cabid == null){
+                              Fluttertoast.showToast(
+                                  msg: 'Please Select Vehicle Type',
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Colors.green,
+                                  textColor: Colors.white);
+                            }else if(_deliveryLocation.text == 'Delivery Location'){
+                              Fluttertoast.showToast(
+                                  msg: 'Please Select Delivery Location',
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Colors.green,
+                                  textColor: Colors.white);
+                            }
+                            else if(locationAddlist.length <= 0){
+                              Fluttertoast.showToast(
+                                  msg: 'Please Select Pickup Location',
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Colors.green,
+                                  textColor: Colors.white);
+                            }
+                            else{
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ConfirmScreen(cabid: cabid.toString(),headertext: _deliveryLocation.text,VhecletypeName: HeaderText.toString())));
+
+
+
+                            }
+
+
+
                           },
                           child: Container(
                             height: 50,
@@ -573,6 +610,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       setState(() {});
     });
     //getCabList();
+    _deliveryLocation.text = 'Delivery Location';
   }
 
   @override

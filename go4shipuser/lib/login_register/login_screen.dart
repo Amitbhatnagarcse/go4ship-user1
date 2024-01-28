@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:go4shipuser/FCMClasses/notification_service.dart';
 import 'package:go4shipuser/dashboard/dashboard.dart';
 import 'package:go4shipuser/login_register/register_screen.dart';
@@ -163,6 +164,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void getLoginData() async {
+     await EasyLoading.show(
+      status: 'loading...',
+      maskType: EasyLoadingMaskType.black,
+    );
     print('emial${_phonecontroller.text.toString()}');
     print('password${_passwordcontroller.text.toString()}');
     print('FCM_TOKEN${fcmtoken}');
@@ -199,8 +204,10 @@ class _LoginScreenState extends State<LoginScreen> {
           // print('print cabtype......................${response.data['cabtypes']}');
         });
       }
+      await EasyLoading.dismiss();
        print(response);
     } catch (e) {
+      await EasyLoading.dismiss();
       print(e);
     }
   }
