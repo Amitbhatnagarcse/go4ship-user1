@@ -886,4 +886,5 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
     return await Geolocator.getCurrentPosition();
   }
+
 }
