@@ -32,21 +32,19 @@ class _MySearchLocationState extends State<MySearchLocation> {
             final fullJSON = await place.fullJSON;
            // final lat = await place.;
 
-
-
             print('description:::::------${description}');
             print('latlong:::::------${geolocation!.coordinates}');
             print('placeId:::::------${placeId}');
             print('fullJSON:::::------${fullJSON}');
 
             Navigator.pop(context, description);
-            getCoordinatesFromAddress(description);
+            //getCoordinatesFromAddress(description);
           },
         ),
       ),
     );
   }
-  Future<void> getCoordinatesFromAddress(String address) async {
+  /*Future<void> getCoordinatesFromAddress(String address) async {
     try {
       List<Location> locations = await locationFromAddress(address);
       if (locations != null && locations.isNotEmpty) {
@@ -60,5 +58,5 @@ class _MySearchLocationState extends State<MySearchLocation> {
     } catch (e) {
       print('Error: $e');
     }
-  }
+  }*/
 }

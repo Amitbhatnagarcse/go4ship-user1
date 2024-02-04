@@ -12,8 +12,8 @@ class AppConstants {
   static const ViewProfile_URL = "viewprofile.php";
   static const UserWallet_URL = "user-wallet.php";
   static const MyRides_URL = "myrides.php";
+  static const Booking_URL = "booking.php";
   //static const MyRides_URL = "myrides.php";
-
 
 
 
@@ -26,6 +26,17 @@ class AppConstants {
   static const ULNAME   ="lname";
   static const UFNAME   ="fname";
   static const UPHONENO="phone";
+  static const Ridedate="ride_date";
+  static const ReturnDate="return_date";
+  static const PickupLocation="pickup_location";
+  static const DropLocation="drop_location";
+  static const PickLat="pickup_lat";
+  static const PickLng="pickup_lng";
+  static const DropLatLong="drop_lat_long";
+  static const Package="package";
+  static const UID="uid";
+  static const CabType="cabtype";
+  static const PayType="pay_type";
 
   static const Uname="name";
   static const lname="lname";

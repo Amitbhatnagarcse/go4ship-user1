@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go4shipuser/confirmRideScreen/PackageModel.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/AppColor.dart';
 import '../constant/AppUrl.dart';
@@ -13,12 +16,26 @@ class ConfirmScreen extends StatefulWidget {
   final String cabid;
   final String headertext;
   final String VhecletypeName;
+  final String droplocation;
+  final String droplat;
+  final String droplong;
+
+  final List locationAddlist;
+  final List pickuplat_list;
+
+  final List pickuplong_list;
 
   const ConfirmScreen({
     Key? key,
     required this.cabid,
     required this.headertext,
     required this.VhecletypeName,
+    required this.droplocation,
+    required this.droplat,
+    required this.droplong,
+    required this.locationAddlist,
+    required this.pickuplat_list,
+    required this.pickuplong_list,
   }) : super(key: key);
 
   @override
@@ -26,6 +43,14 @@ class ConfirmScreen extends StatefulWidget {
 }
 
 class _ConfirmScreenState extends State<ConfirmScreen> {
+  late String pickuplocation;
+  late String pickuplat;
+  late String pickuplang;
+  late String packageid;
+  late SharedPreferences preferences;
+  //String pay_type = '3';
+  String? pay_type_;
+  PayTypeData? pay_type = PayTypeData.Wallet;
   TextEditingController _changePackagetext = TextEditingController();
   var _changepackText = 'Select Package';
 
@@ -53,6 +78,15 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   @override
   void initState() {
     print('cabid////////${widget.cabid}');
+    print('droplocation////////${widget.droplocation.toString()}');
+
+    pickuplocation = widget.locationAddlist.join('*');
+    pickuplat = widget.pickuplat_list.join(',');
+    pickuplang = widget.pickuplong_list.join(',');
+
+    print('locationString/// ${pickuplocation}');
+    print('pickuplat/// ${pickuplat}');
+    print('pickuplong/// ${pickuplang}');
     _changePackagetext.text = _changepackText;
     getData();
     // TODO: implement initState
@@ -180,7 +214,8 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                                             Border.all(color: Colors.orange)),
                                     margin: EdgeInsets.all(5),
                                     height: 25,
-                                    child: Center(child: Text(widget.VhecletypeName)),
+                                    child: Center(
+                                        child: Text(widget.VhecletypeName)),
                                   ))
                                 ],
                               ),
@@ -226,21 +261,27 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                               height: 1,
                               color: Colors.grey,
                             ),
-                            Align(
-                              alignment: FractionalOffset.bottomCenter,
-                              child: Container(
-                                width: double.infinity,
-                                height: 50,
-                                color: Colors.black,
-                                child: Center(
-                                    child: Text(
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14),
-                                        'CONFIRM BOOKING')),
-                              ),
-                            ),
+                            GestureDetector(
+                              onTap: (){
+                                getBooking();
+                              },
+                              child: Align(
+                                alignment: FractionalOffset.bottomCenter,
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 50,
+                                  color: Colors.black,
+                                  child: Center(
+                                      child: Text(
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14),
+                                          'CONFIRM BOOKING')),
+                                ),
+                              ) ,
+                            )
+                           ,
                           ],
                         ),
                       )),
@@ -396,6 +437,8 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
         child: GestureDetector(
       onTap: () {
         setState(() {
+          packageid = packagelist[index]['id'].toString();
+          print('packageid${packageid}');
           _changePackagetext.text = packagelist[index]['hour'].toString() +
               ' Hour ' +
               packagelist[index]['km'].toString() +
@@ -458,6 +501,77 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     }
   }
 
+  void getBooking() async {
+    preferences = await SharedPreferences.getInstance();
+    var now = new DateTime.now();
+    var formatter = new DateFormat('yyyy-MM-dd hh:mm:ss aa');
+    String currentDate = formatter.format(now);
+    print(currentDate); // 2016-01-25
+    print('currentDate${currentDate}');
+    print('PickupLocation${pickuplocation}');
+    print('droplocation${widget.droplocation}');
+    print('pickuplat${pickuplat}');
+    print('pickuplang${pickuplang}');
+    print('droplat${widget.droplat}');
+    print('droplong${widget.droplong}');
+    print('packageid${packageid}');
+    print('UID${preferences.getString('userid')}');
+    print('CabType${widget.cabid}');
+    print('PayType${pay_type_}');
+
+
+    try {
+      FormData formData = FormData.fromMap({
+
+        AppConstants.Ridedate: currentDate,
+        AppConstants.ReturnDate: '00-00-0000 00:00:00 am',
+        AppConstants.PickupLocation: pickuplocation,
+        AppConstants.DropLocation: widget.droplocation,
+        AppConstants.PickLat: pickuplat,
+        AppConstants.PickLng: pickuplang,
+        AppConstants.DropLatLong: widget.droplat + ',' + widget.droplong,
+        AppConstants.Package: packageid,
+        AppConstants.UID: preferences.getString('userid'),
+        AppConstants.CabType: widget.cabid,
+        AppConstants.PayType: pay_type_,
+      });
+      //response = await dio.post("/info", data: formData);
+      // print(“Response FormData :: ${formData}”);
+
+      var response = await Dio().post(
+          AppConstants.app_base_url + AppConstants.Booking_URL,
+          data: formData);
+      if (response.statusCode == 200) {
+        setState(() {
+          //print('print lenth${response.data['result'][0]['cabtypes']}');
+          //cablist = response.data['result'][0]['cabtypes'] as List;
+
+          //{"result":[{"Result":"Success","ride_id":"RID2024934"}]}
+          print('print response${response.statusCode.toString()}');
+          var resut= response.data['result'][0]['Result'];
+          print('print response${resut.toString()}');
+          if(resut != null){
+            print('print response${resut.toString()}');
+           // print('responcedata////  ${response.data['result']}');
+          }
+
+         // var resut = response.data['result'][0]['Result'];
+          Fluttertoast.showToast(
+              msg: 'done',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.green,
+              textColor: Colors.white);
+
+          // print('print cabtype......................${response.data['cabtypes']}');
+        });
+      }
+      // print(response);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   void showPaymentModelSheet(BuildContext context) {
     showModalBottomSheet<void>(
         isScrollControlled: true,
@@ -497,7 +611,10 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                         child: Text(
                           'How would you like to pay?',
                           textAlign: TextAlign.left,
-                          style: TextStyle(color: Colors.black, fontSize: 16,fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
                         ),
                       )),
                     ),
@@ -515,176 +632,244 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   Widget _helpitemBuilderPayment(BuildContext context) {
     return InkWell(
         child: Container(
-
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(width: 2.0, color: ColorConstants.AppColorDark),
         ),
         // color: (index % 2 == 0) ? Colors.white :ColorConstants.AppColorDark,
       ),
-      child: Column(
-        children: [
-          Container(
-            color: Colors.white,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child:
+      StatefulBuilder(
+        builder: (BuildContext context, StateSetter myState) {
+          return
+            Column(
               children: [
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  '  Choose payment option ',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.blueAccent),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Image.asset(
-                        width: 25, height: 25, 'assets/images/walletnew.png'),
-                    Text(
+                Container(
+                  color: Colors.white,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        '  Choose Payment Option ',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.blueAccent),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      ListTile(
+                        title: const Text('Wallet payment'),
+                        leading: Radio<PayTypeData>(
+                          value: PayTypeData.Wallet,
+                          groupValue:pay_type,
+                          onChanged: (PayTypeData? value) {
+                            myState(() {
+                              pay_type = PayTypeData.Wallet;
+                              pay_type_ ='0';
+                            });
+                          },
+                        ),
+                      ),
+                      ListTile(
+                        title: const Text('Online'),
+                        leading: Radio<PayTypeData>(
+                          value: PayTypeData.Online,
+                          groupValue: pay_type,
+                          onChanged: (PayTypeData? value) {
+                            myState(() {
+                              pay_type = PayTypeData.Online;
+                              pay_type_ ='1';
+                            });
+                          },
+                        ),
+                      ),
+                      ListTile(
+                        title: const Text('Case'),
+                        leading: Radio<PayTypeData>(
+                          value: PayTypeData.Case,
+                          groupValue: pay_type,
+                          onChanged: (PayTypeData? value) {
+                            myState(() {
+                              pay_type = PayTypeData.Case;
+                              pay_type_ ='2';
+                            });
+                          },
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Image.asset(
+                              width: 25, height: 25, 'assets/images/walletnew.png'),
+                          /*  Text(
                       ' Wallet payment ',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                           color: Colors.black),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  '  Balence is INR 0',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.blueAccent),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  width: double.infinity,
-                  height: 150,
-                  color: Colors.black12,
-                  child: Column(
-                    children: [
-
+                    ),*/
+                        ],
+                      ),
                       SizedBox(
                         height: 20,
                       ),
                       Text(
-                        ' Your wallet amount was too low. To user this \n payment method please add money to your wallet.',
+                        '  Balence is INR 0',
                         style: TextStyle(
-                            fontWeight: FontWeight.normal,
+                            fontWeight: FontWeight.bold,
                             fontSize: 16,
-                            color: Colors.black),
+                            color: Colors.blueAccent),
                       ),
                       SizedBox(
                         height: 20,
                       ),
-
+                      Container(
+                        width: double.infinity,
+                        height: 150,
+                        color: Colors.black12,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              ' Your wallet amount was too low. To user this \n payment method please add money to your wallet.',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 16,
+                                  color: Colors.black),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  color: Colors.green,
+                                  width: 100,
+                                  height: 50,
+                                  child: Center(
+                                      child: Text(
+                                        'Add Money',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      )),
+                                ),
+                                SizedBox(
+                                  width: 50,
+                                ),
+                                Container(
+                                  color: Colors.red,
+                                  width: 100,
+                                  height: 50,
+                                  child: Center(
+                                      child: Text(
+                                        'Cancel',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      )),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            color: Colors.green,
-                            width: 100,
-                            height: 50,
-                            child: Center(child: Text('Add Money',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,  fontSize: 14,),)),
-                          ),
                           SizedBox(
-                            width: 50,
+                            width: 10,
                           ),
-                          Container(
-                            color: Colors.red,
-                            width: 100,
-                            height: 50,
-                            child: Center(child: Text('Cancel',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,  fontSize: 14,),)),
-                          )
+                          Image.asset(
+                              width: 25, height: 25, 'assets/images/walletnew.png'),
+                          Text(
+                            ' Online payment ',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.black),
+                          ),
                         ],
                       ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Image.asset(
+                              width: 25, height: 25, 'assets/images/walletnew.png'),
+                          Text(
+                            ' Case',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.black),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Divider(
+                        color: Colors.black,
+                        height: 10,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Center(
+                        child:GestureDetector(
+                          onTap: (){
 
+                            Navigator.of(context).pop();
+                          },
+                          child:  Container(
+                            color: Colors.black,
+                            width: 100,
+                            height: 50,
+                            child: Center(
+                                child: Text(
+                                  'OK',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                )),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
                     ],
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  children: [
-
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Image.asset(
-                        width: 25, height: 25, 'assets/images/walletnew.png'),
-                    Text(
-                      ' Online payment ',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.black),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Image.asset(
-                        width: 25, height: 25, 'assets/images/walletnew.png'),
-                    Text(
-                      ' Case',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.black),
-                    ),
-
-
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Divider(
-                  color: Colors.black,
-                  height: 10,
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-
-                Center(
-                  child: Container(
-                    color: Colors.black,
-                    width: 100,
-                    height: 50,
-                    child: Center(child: Text('OK',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,  fontSize: 14,),)),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
+                )
               ],
-            ),
-          )
-        ],
-      ),
+            );
+        }
+      )
+
     ));
   }
 
@@ -696,3 +881,5 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     }
   }
 }
+
+enum PayTypeData { Wallet, Online, Case }

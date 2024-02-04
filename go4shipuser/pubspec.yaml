@@ -55,9 +55,9 @@ dependencies:
   shared_preferences: ^2.0.11
   fluttertoast: ^8.1.2
   #google_places_flutter: ^2.0.6
-
+  flutter_google_places: ^0.3.0
   #app_settings: ^5.0.0
-
+  intl: ^0.19.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

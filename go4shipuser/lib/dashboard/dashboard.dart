@@ -43,6 +43,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   //List<PlacesSearchResult> places = [];
   List cablist = [];
   List locationAddlist = [];
+ // List pickuplocationlist = [];
+  List pickuplat_list = [];
+  List pickuplong_list = [];
   int selectedindex = 0;
 
   //var cablistdata;
@@ -54,7 +57,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _onMapCreated(GoogleMapController controller) {
     myController = controller;
   }
-
+  String? droplat;
+  String? droplong;
   //List<String> youList=['1,'2','3','4'];
 
   @override
@@ -298,9 +302,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           print('statechange1------$value');
 
                           if (value != null) {
-
                             _deliveryLocation.text = value;
-                            //locationAddlist.add('${value}');
+                            getCoordinatesFromAddressDropLocation(value);
+
                           }
                         }));
 
@@ -373,6 +377,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               if (value != null) {
 
                                 locationAddlist.add('${value}');
+                                getCoordinatesFromAddressPickUpLocation(value);
+
                               }
                             }));
                       },
@@ -456,10 +462,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   textColor: Colors.white);
                             }
                             else{
+
+
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ConfirmScreen(cabid: cabid.toString(),headertext: _deliveryLocation.text,VhecletypeName: HeaderText.toString())));
+                                      builder: (context) => ConfirmScreen(cabid: cabid.toString(),headertext: _deliveryLocation.text,VhecletypeName: HeaderText.toString(), locationAddlist: locationAddlist, droplat: droplat.toString(), droplong: droplong.toString(), droplocation: _deliveryLocation.text, pickuplat_list:pickuplat_list , pickuplong_list: pickuplong_list,)));
 
 
 
@@ -783,9 +791,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   setState(() {
                     print('lenthremove}');
                     locationAddlist.removeAt(index);
+                    pickuplat_list.removeAt(index);
+                    pickuplong_list.removeAt(index);
                   });
 
-                  // locationAddlist.remove(index);
                 },
                 child: Expanded(
                     child: Align(
@@ -859,7 +868,47 @@ class _DashboardScreenState extends State<DashboardScreen> {
       debugPrint(e);
     });
   }
+  Future<void> getCoordinatesFromAddressDropLocation(String address) async {
+    try {
+      List<Location> locations = await locationFromAddress(address);
+      if (locations != null && locations.isNotEmpty) {
+        Location first = locations.first;
+        double latitude = first.latitude;
+        double longitude = first.longitude;
 
+        droplat=latitude.toString();
+        droplong=longitude.toString();
+        print('DropLatitude: $droplat, DropLongitude: $droplong');
+
+      } else {
+        print('No location found for the provided address.');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  Future<void> getCoordinatesFromAddressPickUpLocation(String address) async {
+    try {
+      List<Location> locations = await locationFromAddress(address);
+      if (locations != null && locations.isNotEmpty) {
+        Location first = locations.first;
+        double latitude = first.latitude;
+        double longitude = first.longitude;
+        pickuplat_list.add(latitude);
+        pickuplong_list.add(longitude);
+
+       // droplat=latitude.toString();
+       // droplong=longitude.toString();
+        //print('DropLatitude: $droplat, DropLongitude: $droplong');
+
+      } else {
+        print('No location found for the provided address.');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
   void swapitems(int index) {
     String temp;
     temp = cablist[index];
