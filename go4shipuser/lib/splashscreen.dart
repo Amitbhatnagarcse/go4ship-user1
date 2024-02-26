@@ -36,6 +36,7 @@ class FadeIn extends State<SplashScreen> {
 
   @override Widget build(BuildContext context) {
     return MaterialApp(
+
       home: Scaffold(
         backgroundColor: ColorConstants.AppColorDark,
         body: Center(

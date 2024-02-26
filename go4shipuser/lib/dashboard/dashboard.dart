@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go4shipuser/confirmRideScreen/Latarconfirm_screen.dart';
 import 'package:go4shipuser/confirmRideScreen/confirm_screen.dart';
 
 import 'package:go4shipuser/constant/AppColor.dart';
@@ -43,7 +44,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   //List<PlacesSearchResult> places = [];
   List cablist = [];
   List locationAddlist = [];
- // List pickuplocationlist = [];
+
+  // List pickuplocationlist = [];
   List pickuplat_list = [];
   List pickuplong_list = [];
   int selectedindex = 0;
@@ -54,12 +56,50 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String? cabid;
   String? HeaderText;
   TextEditingController _deliveryLocation = TextEditingController();
+  TextEditingController _selectDatecontroller = TextEditingController();
+  TextEditingController _selectTimecontroller = TextEditingController();
+
   void _onMapCreated(GoogleMapController controller) {
     myController = controller;
   }
+
   String? droplat;
   String? droplong;
+
   //List<String> youList=['1,'2','3','4'];
+  TextEditingController _DateController = TextEditingController();
+
+  DateTime selectedDate = DateTime.now();
+  late TimeOfDay _selectedTime = TimeOfDay.now();
+
+  Future<void> _selectTime(BuildContext context,StateSetter setter) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime ,
+    );
+    if (picked != null && picked != _selectedTime) {
+      setter(() {
+        _selectedTime = picked;
+        _selectTimecontroller.text = _selectedTime.hour.toString()+' : ' + _selectedTime.minute.toString();
+        print('_selectedTime${_selectedTime.toString()}');
+      });
+    }
+  }
+  Future<void> _selectDate(BuildContext context,StateSetter setter) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate) {
+      setter(() {
+        selectedDate = picked;
+
+        _selectDatecontroller.text=selectedDate.toString().substring(0,10);
+        print('selectedDate${selectedDate.toString()}');
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +173,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>  MyBooking()));
+                                builder: (context) => MyBooking()));
 
                         // Add navigation logic here
                       },
@@ -209,7 +249,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         appBar: AppBar(
           iconTheme: IconThemeData(color: Colors.black),
-          title: Text(style: TextStyle(color: Colors.black),'Book Your Delivery'),
+          title:
+              Text(style: TextStyle(color: Colors.black), 'Book Your Delivery'),
           backgroundColor: ColorConstants.AppColorDark,
         ),
         body: Stack(
@@ -304,7 +345,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           if (value != null) {
                             _deliveryLocation.text = value;
                             getCoordinatesFromAddressDropLocation(value);
-
                           }
                         }));
 
@@ -346,8 +386,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Expanded(
                             child: Align(
                               alignment: Alignment.centerLeft,
-                             child: Text( _deliveryLocation.text),
-                             // child: Text(_deliveryLocation.text),
+                              child: Text(_deliveryLocation.text),
+                              // child: Text(_deliveryLocation.text),
                             ),
                           ),
                           Expanded(
@@ -375,10 +415,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ).then((value) => setState(() {
                               print('statechange1$value');
                               if (value != null) {
-
                                 locationAddlist.add('${value}');
                                 getCoordinatesFromAddressPickUpLocation(value);
-
                               }
                             }));
                       },
@@ -416,6 +454,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Expanded(
                         child: GestureDetector(
                       onTap: () {
+
+              if (cabid == null) {
+              Fluttertoast.showToast(
+              msg: 'Please Select Vehicle Type',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.green,
+              textColor: Colors.white);
+              } else if (_deliveryLocation.text ==
+              'Delivery Location') {
+              Fluttertoast.showToast(
+              msg: 'Please Select Delivery Location',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.green,
+              textColor: Colors.white);
+              } else if (locationAddlist.length <= 0) {
+              Fluttertoast.showToast(
+              msg: 'Please Select Pickup Location',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.green,
+              textColor: Colors.white);
+              } else {
+
+                _selectTimecontroller.text= '';
+                _selectDatecontroller.text= '';
+                showModalSheet(context);
+              }
+
                         // openAlert();
                       },
                       child: Container(
@@ -438,43 +506,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Expanded(
                       child: GestureDetector(
                           onTap: () {
-                            if(cabid == null){
+                            if (cabid == null) {
                               Fluttertoast.showToast(
                                   msg: 'Please Select Vehicle Type',
                                   toastLength: Toast.LENGTH_SHORT,
                                   gravity: ToastGravity.BOTTOM,
                                   backgroundColor: Colors.green,
                                   textColor: Colors.white);
-                            }else if(_deliveryLocation.text == 'Delivery Location'){
+                            } else if (_deliveryLocation.text ==
+                                'Delivery Location') {
                               Fluttertoast.showToast(
                                   msg: 'Please Select Delivery Location',
                                   toastLength: Toast.LENGTH_SHORT,
                                   gravity: ToastGravity.BOTTOM,
                                   backgroundColor: Colors.green,
                                   textColor: Colors.white);
-                            }
-                            else if(locationAddlist.length <= 0){
+                            } else if (locationAddlist.length <= 0) {
                               Fluttertoast.showToast(
                                   msg: 'Please Select Pickup Location',
                                   toastLength: Toast.LENGTH_SHORT,
                                   gravity: ToastGravity.BOTTOM,
                                   backgroundColor: Colors.green,
                                   textColor: Colors.white);
-                            }
-                            else{
-
-
+                            } else {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ConfirmScreen(cabid: cabid.toString(),headertext: _deliveryLocation.text,VhecletypeName: HeaderText.toString(), locationAddlist: locationAddlist, droplat: droplat.toString(), droplong: droplong.toString(), droplocation: _deliveryLocation.text, pickuplat_list:pickuplat_list , pickuplong_list: pickuplong_list,)));
-
-
-
+                                      builder: (context) => ConfirmScreen(
+                                            cabid: cabid.toString(),
+                                            headertext: _deliveryLocation.text,
+                                            VhecletypeName:
+                                                HeaderText.toString(),
+                                            locationAddlist: locationAddlist,
+                                            droplat: droplat.toString(),
+                                            droplong: droplong.toString(),
+                                            droplocation:
+                                                _deliveryLocation.text,
+                                            pickuplat_list: pickuplat_list,
+                                            pickuplong_list: pickuplong_list,
+                                          )));
                             }
-
-
-
                           },
                           child: Container(
                             height: 50,
@@ -499,6 +570,245 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
+  void showModalSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter state) {
+            return createBottomSheetLatarBooking(context, state);
+          });
+        });
+  }
+
+  createBottomSheetLatarBooking(BuildContext context, StateSetter state) {
+    return Padding(
+      padding: MediaQuery.of(context).viewInsets,
+      child: Wrap(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(0),
+            child: Container(
+              color: Colors.orange,
+              height: 40,
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                      child: SizedBox(
+                    width: 50,
+                    child: Container(
+                      margin: EdgeInsets.all(5),
+                      padding: EdgeInsets.all(5),
+                      width: 30,
+                      child: Container(
+                          child: Center(
+                        child: Text(
+                          'Advance Booking',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(color: Colors.white, fontSize: 13),
+                        ),
+                      )),
+                    ),
+                  ))
+                ],
+              ),
+            ),
+          ),
+
+          SizedBox(
+            height: 100,
+          ),
+
+          GestureDetector(
+            onTap: (){
+              _selectDate(context,state);
+            },
+            child:   Container(
+              margin: EdgeInsets.all(10),
+              padding: EdgeInsets.all(10),
+              height: 70,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.orange,
+                  width: 2.0,
+                ),
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+
+                  Text(_selectDatecontroller.text.toString()),
+                  Container(
+                      margin: EdgeInsets.only(right: 20, left: 10),
+                      child: Image.asset(
+                        "assets/images/calender.png",
+                        width: 20,
+                        height: 20,
+                      )),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 100,
+          ),
+          GestureDetector(
+            onTap: (){
+              _selectTime(context,state);
+            },
+            child:   Container(
+              margin: EdgeInsets.all(10),
+              padding: EdgeInsets.all(10),
+              height: 70,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.orange,
+                  width: 2.0,
+                ),
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+
+                  Text(_selectTimecontroller.text.toString()),
+                  Container(
+                      margin: EdgeInsets.only(right: 20, left: 10),
+                      child: Image.asset(
+                        "assets/images/calender.png",
+                        width: 20,
+                        height: 20,
+                      )),
+                ],
+              ),
+            ),
+          ),
+
+
+          GestureDetector(
+            onTap: () {
+
+
+              print('_selectedTime${_selectedTime.hour.toString()}');
+              print('selectedDate${selectedDate.toString()}');
+//yyyy-MM-dd hh:mm:ss aa
+              var datetime= selectedDate.toString().substring(0,10)+' '+_selectedTime.hour.toString()+':'+_selectedTime.minute.toString()+':'+'00';
+
+              print('datetime${datetime.toString()}');
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LatarConfirmScreen(
+                        cabid: cabid.toString(),
+                        headertext: _deliveryLocation.text,
+                        VhecletypeName: HeaderText.toString(),
+                        locationAddlist: locationAddlist,
+                        droplat: droplat.toString(),
+                        droplong: droplong.toString(),
+                        droplocation: _deliveryLocation.text,
+                        pickuplat_list: pickuplat_list,
+                        pickuplong_list: pickuplong_list,
+                        datetime: datetime,
+
+
+                      )));
+            },
+
+            child: Container(
+              width: 150,
+              height: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: ColorConstants.AppColorDark,
+              ),
+              child: Center(
+                  child: Text(
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 18),
+                      'Ok')),
+            ),
+          ),
+          //_helpItemBuilderAdvanceBooking()
+        ],
+      ),
+    );
+  }
+
+  Widget _helpItemBuilderAdvanceBooking() {
+    return MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        child: ListView.builder(
+            controller: _controller,
+            itemCount: 10,
+            itemBuilder: _helpitemBuilderAdvanceBooking,
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true));
+  }
+
+  Widget _helpitemBuilderAdvanceBooking(BuildContext context, int index) {
+    return InkWell(
+        child: GestureDetector(
+      onTap: () {
+        setState(() {});
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(width: 2.0, color: ColorConstants.AppColorDark),
+          ),
+          // color: (index % 2 == 0) ? Colors.white :ColorConstants.AppColorDark,
+        ),
+        child: Column(
+          children: [
+            Container(
+              //  color: Colors.red,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'hgsdhjjd',
+                  style: TextStyle(
+                      fontSize: 13,
+                      color: ColorConstants.black,
+                      fontWeight: FontWeight.normal),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              //  holder.additional.setText("Additional charges for extra distance : "+currency+" "+ride.getAdddist()+"/Km"+
+              //         "\nextra time : "+currency+" "+ride.getAddtime()+"/Hr");
+              child: Text(
+                'Additional charges for extra distance ',
+                style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.normal),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ));
+  }
+
+  /* int getHelpLength() {
+    if (packagelist.isNotEmpty) {
+      return packagelist.length;
+    } else {
+      return 0;
+    }
+  }*/
 
   void openAlert() {
     dialog = Dialog(
@@ -668,9 +978,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         cablist = resBody['result'];
         print('print list inner${cablist}');
 
-
-
-       // cabid = cabid
+        // cabid = cabid
       } else {
         //reLoginDialog();
       }
@@ -794,7 +1102,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     pickuplat_list.removeAt(index);
                     pickuplong_list.removeAt(index);
                   });
-
                 },
                 child: Expanded(
                     child: Align(
@@ -868,6 +1175,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       debugPrint(e);
     });
   }
+
   Future<void> getCoordinatesFromAddressDropLocation(String address) async {
     try {
       List<Location> locations = await locationFromAddress(address);
@@ -876,10 +1184,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         double latitude = first.latitude;
         double longitude = first.longitude;
 
-        droplat=latitude.toString();
-        droplong=longitude.toString();
+        droplat = latitude.toString();
+        droplong = longitude.toString();
         print('DropLatitude: $droplat, DropLongitude: $droplong');
-
       } else {
         print('No location found for the provided address.');
       }
@@ -898,10 +1205,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         pickuplat_list.add(latitude);
         pickuplong_list.add(longitude);
 
-       // droplat=latitude.toString();
-       // droplong=longitude.toString();
+        // droplat=latitude.toString();
+        // droplong=longitude.toString();
         //print('DropLatitude: $droplat, DropLongitude: $droplong');
-
       } else {
         print('No location found for the provided address.');
       }
@@ -909,6 +1215,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       print('Error: $e');
     }
   }
+
   void swapitems(int index) {
     String temp;
     temp = cablist[index];
@@ -935,5 +1242,4 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
     return await Geolocator.getCurrentPosition();
   }
-
 }

@@ -13,20 +13,23 @@ import '../constant/AppColor.dart';
 import '../constant/AppUrl.dart';
 import '../constant/DialogUtils.dart';
 
-class ConfirmScreen extends StatefulWidget {
+class LatarConfirmScreen extends StatefulWidget {
   final String cabid;
   final String headertext;
   final String VhecletypeName;
   final String droplocation;
   final String droplat;
   final String droplong;
+  final String datetime;
 
   final List locationAddlist;
   final List pickuplat_list;
-
   final List pickuplong_list;
 
-  const ConfirmScreen({
+  //final String selectedDate;
+  //final String selectedTime;
+
+  const LatarConfirmScreen({
     Key? key,
     required this.cabid,
     required this.headertext,
@@ -37,13 +40,14 @@ class ConfirmScreen extends StatefulWidget {
     required this.locationAddlist,
     required this.pickuplat_list,
     required this.pickuplong_list,
+    required this.datetime,
   }) : super(key: key);
 
   @override
-  State<ConfirmScreen> createState() => _ConfirmScreenState();
+  State<LatarConfirmScreen> createState() => _LatarConfirmScreenState();
 }
 
-class _ConfirmScreenState extends State<ConfirmScreen> {
+class _LatarConfirmScreenState extends State<LatarConfirmScreen> {
   late String pickuplocation;
   late String pickuplat;
   late String pickuplang;
@@ -515,10 +519,10 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   void getBooking() async {
     preferences = await SharedPreferences.getInstance();
     var now = new DateTime.now();
-    var formatter = new DateFormat('yyyy-MM-dd hh:mm:ss aa');
-    String currentDate = formatter.format(now);
-    print(currentDate); // 2016-01-25
-    print('currentDate${currentDate}');
+    //var formatter = new DateFormat('yyyy-MM-dd hh:mm:ss aa');
+    //String currentDate = formatter.format(now);
+    //print(datetime); // 2016-01-25
+    print('datetime${widget.datetime.toString()}');
     print('PickupLocation${pickuplocation}');
     print('droplocation${widget.droplocation}');
     print('pickuplat${pickuplat}');
@@ -532,7 +536,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
 
     try {
       FormData formData = FormData.fromMap({
-        AppConstants.Ridedate: currentDate,
+        AppConstants.Ridedate: widget.datetime,
         AppConstants.ReturnDate: '00-00-0000 00:00:00 am',
         AppConstants.PickupLocation: pickuplocation,
         AppConstants.DropLocation: widget.droplocation,
@@ -559,14 +563,11 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
             print('print response${resut.toString()}');
             // print('responcedata////  ${response.data['result']}');
           }
-
           // var resut = response.data['result'][0]['Result'];
-
           showCustomDialog(context,
               message:
                   'Your booking request sent successfully. Any of our driver will accept your ride immediately. Thank you.');
 
-         // Navigator.pop(context);
           // print('print cabtype......................${response.data['cabtypes']}');
         });
       }
@@ -595,8 +596,6 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
           );
         });
   }
-
-
   void showPaymentModelSheet(BuildContext context) {
     showModalBottomSheet<void>(
         isScrollControlled: true,

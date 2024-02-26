@@ -7,10 +7,7 @@ class DialogUtils {
 
   factory DialogUtils() => _instance;
 
-  static void showCustomDialog(BuildContext context,
-      {required String message,
-        String okBtnText = "Ok",
-        }) {
+  static void showCustomDialog(BuildContext context, {required String message, String okBtnText = "Ok",}) {
     showDialog(
         context: context,
         builder: (_) {
