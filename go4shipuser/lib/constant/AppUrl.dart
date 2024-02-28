@@ -12,7 +12,9 @@ class AppConstants {
   static const ViewProfile_URL = "viewprofile.php";
   static const UserWallet_URL = "user-wallet.php";
   static const MyRides_URL = "myrides.php";
+  static const MyRidesDetails_URL = "ridedetails.php";
   static const Booking_URL = "booking.php";
+
   //static const MyRides_URL = "myrides.php";
 
 
@@ -47,5 +49,6 @@ class AppConstants {
   static const UKeyWord = "keyword";
   static const UserId = "userid";
   static const ReferralCode = "referral_code";
+  static const Rideid = "rideid";
 
 }

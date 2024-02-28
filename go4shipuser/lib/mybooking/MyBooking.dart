@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go4shipuser/mybooking/MyBookingDetail.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant/AppColor.dart';
@@ -17,6 +18,7 @@ class MyBooking extends StatefulWidget {
 class _MyBookingState extends State<MyBooking> {
   late SharedPreferences preferences;
   List rideList_list = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -28,28 +30,32 @@ class _MyBookingState extends State<MyBooking> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            title: Text('My Bookings'),
-            backgroundColor: ColorConstants.AppColorDark),
-        body: GestureDetector(
-          onTap: (){
-
-          },
-          child:  Column(
+      appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: Text('My Bookings'),
+          backgroundColor: ColorConstants.AppColorDark),
+      body: GestureDetector(
+          onTap: () {},
+          child: Column(
             children: [
               Expanded(
-                  child: ListView.builder(
-                    itemCount: getLength(),
-                    // list item builder
-                    itemBuilder: _itemBuilder,
-                  ))
+                  child: isLoading == true
+                      ? Center(
+                          child: LoadingAnimationWidget.fourRotatingDots(
+                          color: Colors.deepOrange,
+                          size: 40,
+                        ))
+                      : ListView.builder(
+                          itemCount: getLength(),
+                          // list item builder
+                          itemBuilder: _itemBuilder,
+                        ))
             ],
           )),
-        );
+    );
   }
 
   void getData() async {
@@ -63,6 +69,9 @@ class _MyBookingState extends State<MyBooking> {
           AppConstants.app_base_url + AppConstants.MyRides_URL,
           data: formData);
       if (response.statusCode == 200) {
+        setState(() {
+          isLoading = false;
+        });
         setState(() {
           //print('print lenth${response.data['result'][0]['cabtypes']}');
           rideList_list = response.data['result'] as List;
@@ -87,13 +96,36 @@ class _MyBookingState extends State<MyBooking> {
   }
 
   Widget _itemBuilder(BuildContext context, int index) {
-    return
-    GestureDetector(
-      onTap: (){
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-            builder: (context) => MyBookingDetail(logo_url: rideList_list[index]['logo_url'].toString(), ride_date: rideList_list[index]['ride_date'].toString(), ride_status: rideList_list[index]['ride_status'].toString(), cabtype: rideList_list[index]['cabtype'].toString(), ride_id: rideList_list[index]['ride_id'].toString(), pickup_location: rideList_list[index]['pickup_location'].toString(), profile_url: rideList_list[index]['profile_url'].toString(), estimate_amount: rideList_list[index]['estimate_amount'].toString(), otp: rideList_list[index]['otp'].toString(), driver_name: rideList_list[index]['driver_name'].toString(),)));
+    return GestureDetector(
+      onTap: () {
+        if (rideList_list[index]['ride_status'].toString() == '2' && rideList_list[index]['pay_status'] == '0') {
+     print('ridestatus${rideList_list[index]['ride_status'].toString()}');
+
+        } else {
+          print('ridestatus${rideList_list[index]['ride_status'].toString()}');
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MyBookingDetail(
+                        logo_url: rideList_list[index]['logo_url'].toString(),
+                        ride_date: rideList_list[index]['ride_date'].toString(),
+                        ride_status:
+                            rideList_list[index]['ride_status'].toString(),
+                        cabtype: rideList_list[index]['cabtype'].toString(),
+                        ride_id: rideList_list[index]['ride_id'].toString(),
+                        pickup_location:
+                            rideList_list[index]['pickup_location'].toString(),
+                        profile_url:
+                            rideList_list[index]['profile_url'].toString(),
+                        estimate_amount:
+                            rideList_list[index]['estimate_amount'].toString(),
+                        otp: rideList_list[index]['otp'].toString(),
+                        driver_name:
+                            rideList_list[index]['driver_name'].toString(),
+                        drop_location:
+                            rideList_list[index]['drop_location'].toString(),
+                      )));
+        }
       },
       child: InkWell(
         child: Container(
@@ -120,42 +152,44 @@ class _MyBookingState extends State<MyBooking> {
                     rideList_list[index]['ride_status'] == '2'
                         ? 'Finished'
                         : rideList_list[index]['ride_status'] == '1'
-                        ? 'Accepted'
-                        : rideList_list[index]['ride_status'] == '4'
-                        ? 'In Progress'
-                        : rideList_list[index]['ride_status'] == '5'
-                        ? 'On the Way'
-                        : rideList_list[index]['ride_status'] == '6'
-                        ? 'On Ride'
-                        : rideList_list[index]['ride_status'] ==
-                        '3'
-                        ? 'Cancelled'
-                        : rideList_list[index]
-                    ['ride_status'] ==
-                        '0'
-                        ? 'Pending'
-                        : '',
+                            ? 'Accepted'
+                            : rideList_list[index]['ride_status'] == '4'
+                                ? 'In Progress'
+                                : rideList_list[index]['ride_status'] == '5'
+                                    ? 'On the Way'
+                                    : rideList_list[index]['ride_status'] == '6'
+                                        ? 'On Ride'
+                                        : rideList_list[index]['ride_status'] ==
+                                                '3'
+                                            ? 'Cancelled'
+                                            : rideList_list[index]
+                                                        ['ride_status'] ==
+                                                    '0'
+                                                ? 'Pending'
+                                                : '',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
                       color: rideList_list[index]['ride_status'] == '2'
                           ? Colors.green
                           : rideList_list[index]['ride_status'] == '1'
-                          ? Colors.purple
-                          : rideList_list[index]['ride_status'] == '4'
-                          ? Colors.purple
-                          : rideList_list[index]['ride_status'] == '5'
-                          ? Colors.purple
-                          : rideList_list[index]['ride_status'] == '6'
-                          ? Colors.purple
-                          : rideList_list[index]['ride_status'] ==
-                          '3'
-                          ? Colors.grey
-                          : rideList_list[index]
-                      ['ride_status'] ==
-                          '0'
-                          ? Colors.blueAccent
-                          : Colors.black,
+                              ? Colors.purple
+                              : rideList_list[index]['ride_status'] == '4'
+                                  ? Colors.purple
+                                  : rideList_list[index]['ride_status'] == '5'
+                                      ? Colors.purple
+                                      : rideList_list[index]['ride_status'] ==
+                                              '6'
+                                          ? Colors.purple
+                                          : rideList_list[index]
+                                                      ['ride_status'] ==
+                                                  '3'
+                                              ? Colors.grey
+                                              : rideList_list[index]
+                                                          ['ride_status'] ==
+                                                      '0'
+                                                  ? Colors.blueAccent
+                                                  : Colors.black,
                     ),
                   ),
                   SizedBox(
@@ -174,7 +208,7 @@ class _MyBookingState extends State<MyBooking> {
                     width: 2,
                   ),
                   Text(
-                    rideList_list[index]['cabtype']+' :- ',
+                    rideList_list[index]['cabtype'] + ' :- ',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
@@ -237,7 +271,6 @@ class _MyBookingState extends State<MyBooking> {
                           ClipOval(
                               child: Container(
                                   height: 10, width: 10, color: Colors.orange)),
-
                           SizedBox(
                             width: 5,
                           ),
@@ -263,7 +296,8 @@ class _MyBookingState extends State<MyBooking> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '  INR ' + rideList_list[index]['estimate_amount'].toString(),
+                    '  INR ' +
+                        rideList_list[index]['estimate_amount'].toString(),
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
@@ -291,7 +325,6 @@ class _MyBookingState extends State<MyBooking> {
           ),
         ),
       ),
-    )
-    ;
+    );
   }
 }
