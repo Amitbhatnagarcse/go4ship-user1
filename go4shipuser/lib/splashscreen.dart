@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go4shipuser/login_register/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'StoreLocationMap.dart';
 import 'constant/AppColor.dart';
 import 'dashboard/dashboard.dart';
 
@@ -28,10 +29,9 @@ class FadeIn extends State<SplashScreen> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
+                  //builder: (context) => DashboardScreen()));
                   builder: (context) => DashboardScreen()));
         }
-
-
       }); }); }
 
   @override Widget build(BuildContext context) {

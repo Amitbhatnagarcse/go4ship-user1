@@ -714,13 +714,13 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                           ),
                         ),
                         ListTile(
-                          title: const Text('Case'),
+                          title: const Text('Cash'),
                           leading: Radio<PayTypeData>(
-                            value: PayTypeData.Case,
+                            value: PayTypeData.Cash,
                             groupValue: pay_type,
                             onChanged: (PayTypeData? value) {
                               myState(() {
-                                pay_type = PayTypeData.Case;
+                                pay_type = PayTypeData.Cash;
                                 pay_type_ = '2';
                               });
                             },
@@ -900,4 +900,4 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   }
 }
 
-enum PayTypeData { Wallet, Online, Case }
+enum PayTypeData { Wallet, Online, Cash }

@@ -39,11 +39,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   late Marker destination;
   ScrollController? _controller;
   late Dialog dialog;
-  final LatLng _center = const LatLng(26.7915, 75.2100);
+  LatLng _center = const LatLng(26.912434, 75.787270);
   int selectedIndex = 0; //will highlight first item
   //List<PlacesSearchResult> places = [];
   List cablist = [];
   List locationAddlist = [];
+  final cameraMoveCompleter = Completer<CameraPosition>();
 
   // List pickuplocationlist = [];
   List pickuplat_list = [];
@@ -53,11 +54,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   //var cablistdata;
   String? _currentAddress;
   Position? _currentPosition;
+  LatLng? _currentLocation;
   String? cabid;
   String? HeaderText;
   TextEditingController _deliveryLocation = TextEditingController();
   TextEditingController _selectDatecontroller = TextEditingController();
   TextEditingController _selectTimecontroller = TextEditingController();
+  late GoogleMapController mapcontroller;
+  CameraPosition? cameraPosition;
+  String location1 = "Location Name:";
 
   void _onMapCreated(GoogleMapController controller) {
     myController = controller;
@@ -72,20 +77,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
   DateTime selectedDate = DateTime.now();
   late TimeOfDay _selectedTime = TimeOfDay.now();
 
-  Future<void> _selectTime(BuildContext context,StateSetter setter) async {
+  Future<void> _selectTime(BuildContext context, StateSetter setter) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: _selectedTime ,
+      initialTime: _selectedTime,
     );
     if (picked != null && picked != _selectedTime) {
       setter(() {
         _selectedTime = picked;
-        _selectTimecontroller.text = _selectedTime.hour.toString()+' : ' + _selectedTime.minute.toString();
+        _selectTimecontroller.text = _selectedTime.hour.toString() +
+            ' : ' +
+            _selectedTime.minute.toString();
         print('_selectedTime${_selectedTime.toString()}');
       });
     }
   }
-  Future<void> _selectDate(BuildContext context,StateSetter setter) async {
+
+  Future<void> _selectDate(BuildContext context, StateSetter setter) async {
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
@@ -95,7 +103,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       setter(() {
         selectedDate = picked;
 
-        _selectDatecontroller.text=selectedDate.toString().substring(0,10);
+        _selectDatecontroller.text = selectedDate.toString().substring(0, 10);
         print('selectedDate${selectedDate.toString()}');
       });
     }
@@ -255,17 +263,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         body: Stack(
           children: <Widget>[
-            GoogleMap(
-              myLocationButtonEnabled: false,
-              zoomControlsEnabled: false,
-              markers: Set<Marker>.of(_markers),
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: _center,
-                zoom: 14.0,
-              ),
+            GestureDetector(
+              child: GoogleMap(
+                myLocationButtonEnabled: false,
+                zoomControlsEnabled: false,
+                markers: Set<Marker>.of(_markers),
+                onMapCreated: (controller) {
+                  //method called when map is created
+                  setState(() {
+                    mapcontroller = controller;
+                  });
+                },
+                initialCameraPosition: CameraPosition(
+                  target: _currentLocation ?? _center,
+                  zoom: 14.0,
+                ),
 
-              /*   polylines: {
+                onCameraIdle: () async {
+                  List<Placemark> placemarks = await placemarkFromCoordinates(
+                      cameraPosition!.target.latitude,
+                      cameraPosition!.target.longitude);
+
+                  setState(() {
+                    //get place name from lat and lang
+                    location1 = placemarks.first.administrativeArea.toString() +
+                        ", " + placemarks.first.subLocality.toString();
+
+                    _currentAddress = '${placemarks.first.street}, ${placemarks.first.subLocality}, ${placemarks.first.subAdministrativeArea}, ${placemarks.first.postalCode}';
+                    _deliveryLocation.text = _currentAddress.toString();
+                    _handleTap;
+                  });
+                },
+                onCameraMove: (CameraPosition cameraPositiona) {
+                  cameraPosition = cameraPositiona; //when map is dragging
+                },
+                onTap: _handleTap,
+                /*   polylines: {
                 Polyline(
                     polylineId: PolylineId('route'),
                     color: Colors.blue,
@@ -277,11 +310,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ])
               },*/
 
-              /*markers: {
+                /*markers: {
                 if (origin != null) origin,
                 if (destination != null) destination
               },
               onLongPress: _addmarker,*/
+              ),
+            ),
+            Center(
+              child: Image.asset(
+                  fit: BoxFit.fill,
+                  width: 40,
+                  height: 40,
+                  'assets/images/pin.png'),
             ),
             Column(
               children: [
@@ -454,35 +495,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Expanded(
                         child: GestureDetector(
                       onTap: () {
-
-              if (cabid == null) {
-              Fluttertoast.showToast(
-              msg: 'Please Select Vehicle Type',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              backgroundColor: Colors.green,
-              textColor: Colors.white);
-              } else if (_deliveryLocation.text ==
-              'Delivery Location') {
-              Fluttertoast.showToast(
-              msg: 'Please Select Delivery Location',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              backgroundColor: Colors.green,
-              textColor: Colors.white);
-              } else if (locationAddlist.length <= 0) {
-              Fluttertoast.showToast(
-              msg: 'Please Select Pickup Location',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              backgroundColor: Colors.green,
-              textColor: Colors.white);
-              } else {
-
-                _selectTimecontroller.text= '';
-                _selectDatecontroller.text= '';
-                showModalSheet(context);
-              }
+                        if (cabid == null) {
+                          Fluttertoast.showToast(
+                              msg: 'Please Select Vehicle Type',
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: Colors.green,
+                              textColor: Colors.white);
+                        } else if (_deliveryLocation.text ==
+                            'Delivery Location') {
+                          Fluttertoast.showToast(
+                              msg: 'Please Select Delivery Location',
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: Colors.green,
+                              textColor: Colors.white);
+                        } else if (locationAddlist.length <= 0) {
+                          Fluttertoast.showToast(
+                              msg: 'Please Select Pickup Location',
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: Colors.green,
+                              textColor: Colors.white);
+                        } else {
+                          _selectTimecontroller.text = '';
+                          _selectDatecontroller.text = '';
+                          showModalSheet(context);
+                        }
 
                         // openAlert();
                       },
@@ -625,10 +664,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
 
           GestureDetector(
-            onTap: (){
-              _selectDate(context,state);
+            onTap: () {
+              _selectDate(context, state);
             },
-            child:   Container(
+            child: Container(
               margin: EdgeInsets.all(10),
               padding: EdgeInsets.all(10),
               height: 70,
@@ -639,11 +678,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 borderRadius: BorderRadius.circular(12.0),
               ),
-
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-
                   Text(_selectDatecontroller.text.toString()),
                   Container(
                       margin: EdgeInsets.only(right: 20, left: 10),
@@ -660,10 +697,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             height: 100,
           ),
           GestureDetector(
-            onTap: (){
-              _selectTime(context,state);
+            onTap: () {
+              _selectTime(context, state);
             },
-            child:   Container(
+            child: Container(
               margin: EdgeInsets.all(10),
               padding: EdgeInsets.all(10),
               height: 70,
@@ -674,11 +711,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 borderRadius: BorderRadius.circular(12.0),
               ),
-
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-
                   Text(_selectTimecontroller.text.toString()),
                   Container(
                       margin: EdgeInsets.only(right: 20, left: 10),
@@ -692,36 +727,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
 
-
           GestureDetector(
             onTap: () {
-
-
               print('_selectedTime${_selectedTime.hour.toString()}');
               print('selectedDate${selectedDate.toString()}');
 //yyyy-MM-dd hh:mm:ss aa
-              var datetime= selectedDate.toString().substring(0,10)+' '+_selectedTime.hour.toString()+':'+_selectedTime.minute.toString()+':'+'00';
+              var datetime = selectedDate.toString().substring(0, 10) +
+                  ' ' +
+                  _selectedTime.hour.toString() +
+                  ':' +
+                  _selectedTime.minute.toString() +
+                  ':' +
+                  '00';
 
               print('datetime${datetime.toString()}');
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => LatarConfirmScreen(
-                        cabid: cabid.toString(),
-                        headertext: _deliveryLocation.text,
-                        VhecletypeName: HeaderText.toString(),
-                        locationAddlist: locationAddlist,
-                        droplat: droplat.toString(),
-                        droplong: droplong.toString(),
-                        droplocation: _deliveryLocation.text,
-                        pickuplat_list: pickuplat_list,
-                        pickuplong_list: pickuplong_list,
-                        datetime: datetime,
-
-
-                      )));
+                            cabid: cabid.toString(),
+                            headertext: _deliveryLocation.text,
+                            VhecletypeName: HeaderText.toString(),
+                            locationAddlist: locationAddlist,
+                            droplat: droplat.toString(),
+                            droplong: droplong.toString(),
+                            droplocation: _deliveryLocation.text,
+                            pickuplat_list: pickuplat_list,
+                            pickuplong_list: pickuplong_list,
+                            datetime: datetime,
+                          )));
             },
-
             child: Container(
               width: 150,
               height: 50,
@@ -902,10 +937,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getData();
-    _getCurrentPosition();
+    _handleLocationPermissionnew();
 
-    getUserCurrentLocation().then((value) async {
+    /* _getCurrentPosition();*/
+
+/*    getUserCurrentLocation().then((value) async {
       print(value.latitude.toString() + " " + value.longitude.toString());
 
       // marker added for current users location
@@ -926,9 +962,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final GoogleMapController controller = await _controllerCompleter.future;
       controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
       setState(() {});
-    });
+    });*/
     //getCabList();
-    _deliveryLocation.text = 'Delivery Location';
+  }
+  getLocation1() async {
+    LocationPermission permission;
+    permission = await Geolocator.requestPermission();
+
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    double lat = position.latitude;
+    double long = position.longitude;
+
+    LatLng location = LatLng(lat, long);
+
+    setState(() {
+      _center = location;
+    });
   }
 
   @override
@@ -1241,5 +1291,61 @@ class _DashboardScreenState extends State<DashboardScreen> {
       print("ERROR" + error.toString());
     });
     return await Geolocator.getCurrentPosition();
+  }
+
+  void _handleTap(LatLng tappedPoint) {
+    print(
+        'tappedPoint /// ${tappedPoint}'); // This prints the tapped point coordinates
+    // You can do further processing with the tapped coordinates here
+    _center = LatLng(tappedPoint.latitude, tappedPoint.longitude);
+    print('latlongInit /// ${tappedPoint.latitude + tappedPoint.latitude}');
+
+    getData();
+    //_deliveryLocation.text = 'Delivery Location';
+  }
+
+  getLocation() async {
+    LocationPermission permission;
+    permission = await Geolocator.requestPermission();
+
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    double lat = position.latitude;
+    double long = position.longitude;
+
+    LatLng location = LatLng(lat, long);
+
+    setState(() => _currentPosition = position);
+    _getAddressFromLatLng(_currentPosition!);
+    _currentLocation = LatLng(location.latitude, location.longitude);
+    getData();
+  }
+
+
+  Future<bool> _handleLocationPermissionnew() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Location services are disabled. Please enable the services')));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Location permissions are permanently denied, we cannot request permissions.')));
+      return false;
+    }
+    return true;
   }
 }
