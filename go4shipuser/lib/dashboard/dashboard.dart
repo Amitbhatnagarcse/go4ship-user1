@@ -39,7 +39,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   late Marker destination;
   ScrollController? _controller;
   late Dialog dialog;
+  //LatLng _center = const LatLng(26.912434, 75.787270);
   LatLng _center = const LatLng(26.912434, 75.787270);
+  static const CameraPosition initialCameraPosition = CameraPosition(target: LatLng(26.912434, 75.787270), zoom: 14);
+
   int selectedIndex = 0; //will highlight first item
   //List<PlacesSearchResult> places = [];
   List cablist = [];
@@ -61,12 +64,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   TextEditingController _selectDatecontroller = TextEditingController();
   TextEditingController _selectTimecontroller = TextEditingController();
   late GoogleMapController mapcontroller;
-  CameraPosition? cameraPosition;
+  late CameraPosition cameraPosition;
   String location1 = "Location Name:";
-
-  void _onMapCreated(GoogleMapController controller) {
+  String _latitude = 'Unknown';
+  String _longitude = 'Unknown';
+  /*void _onMapCreated(GoogleMapController controller) {
     myController = controller;
-  }
+  }*/
 
   String? droplat;
   String? droplong;
@@ -264,35 +268,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
         body: Stack(
           children: <Widget>[
             GestureDetector(
-              child: GoogleMap(
+              child:
+
+                  /*_center == null
+          ? Center(child: CircularProgressIndicator())
+          : GoogleMap(
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target: _center,
+                zoom: 15.0,
+              ),
+            ),
+    );*/
+              GoogleMap(
                 myLocationButtonEnabled: false,
                 zoomControlsEnabled: false,
                 markers: Set<Marker>.of(_markers),
+                mapType: MapType.normal,
                 onMapCreated: (controller) {
                   //method called when map is created
                   setState(() {
                     mapcontroller = controller;
                   });
                 },
-                initialCameraPosition: CameraPosition(
-                  target: _currentLocation ?? _center,
-                  zoom: 14.0,
-                ),
+                initialCameraPosition: initialCameraPosition,
 
                 onCameraIdle: () async {
-                  List<Placemark> placemarks = await placemarkFromCoordinates(
-                      cameraPosition!.target.latitude,
-                      cameraPosition!.target.longitude);
-
-                  setState(() {
-                    //get place name from lat and lang
-                    location1 = placemarks.first.administrativeArea.toString() +
-                        ", " + placemarks.first.subLocality.toString();
-
-                    _currentAddress = '${placemarks.first.street}, ${placemarks.first.subLocality}, ${placemarks.first.subAdministrativeArea}, ${placemarks.first.postalCode}';
-                    _deliveryLocation.text = _currentAddress.toString();
-                    _handleTap;
-                  });
+                  getaddress();
+                  //_getLocation();
                 },
                 onCameraMove: (CameraPosition cameraPositiona) {
                   cameraPosition = cameraPositiona; //when map is dragging
@@ -320,8 +323,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Center(
               child: Image.asset(
                   fit: BoxFit.fill,
-                  width: 40,
-                  height: 40,
+                  width: 30,
+                  height: 30,
                   'assets/images/pin.png'),
             ),
             Column(
@@ -330,7 +333,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   height: 10,
                 ),
                 SizedBox(
-                    height: 100,
+                    height: 80,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: getLength(),
@@ -343,12 +346,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             print('cabid_Click${cablist[index]['id']}');
                             //swapitems(selectedIndex);
                             selectedIndex = 0;
-                            //cabid = cablist[index]['id'];
-                            //print('cabid_Click${cablist[index]['id']}');
 
-                            //swapitems(selectedindex),
-                            //selectedindex=0,
-                            //_selected[index] = !_selected[index]);
                           },
                           child: CategoryIcons(
                             iconColor: selectedindex == index
@@ -465,7 +463,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         margin: EdgeInsets.only(right: 12, top: 5),
                         width: 180,
                         color: Colors.black,
-                        height: 40,
+                        height: 35,
                         child: Center(
                             child: Text(
                                 style: TextStyle(color: Colors.white),
@@ -845,6 +843,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }*/
 
+
+  Future<void> getaddress() async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        cameraPosition.target.latitude,
+        cameraPosition.target.longitude);
+
+    setState(() {
+      //get place name from lat and lang
+      location1 = placemarks.first.administrativeArea.toString() +
+          ", " + placemarks.first.subLocality.toString();
+print('placemarks${placemarks.toString()}');
+      _currentAddress = '${placemarks.first.locality}, ${placemarks.first.subLocality}, ${placemarks.first.subAdministrativeArea}, ${placemarks.first.postalCode}';
+      _deliveryLocation.text = _currentAddress.toString();
+      _getLocation();
+
+    });
+  }
   void openAlert() {
     dialog = Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
@@ -938,6 +953,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // TODO: implement initState
     super.initState();
     _handleLocationPermissionnew();
+   // getLocation();
+    //getaddress();
+    getUserCurrentLocation();
+    //_getLocation();
+    getData();
 
     /* _getCurrentPosition();*/
 
@@ -965,21 +985,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });*/
     //getCabList();
   }
-  getLocation1() async {
-    LocationPermission permission;
-    permission = await Geolocator.requestPermission();
 
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    double lat = position.latitude;
-    double long = position.longitude;
-
-    LatLng location = LatLng(lat, long);
-
-    setState(() {
-      _center = location;
-    });
-  }
 
   @override
   void dispose() {
@@ -1283,42 +1289,51 @@ class _DashboardScreenState extends State<DashboardScreen> {
   ];
 
   // created method for getting user current location
-  Future<Position> getUserCurrentLocation() async {
-    await Geolocator.requestPermission()
-        .then((value) {})
-        .onError((error, stackTrace) async {
-      await Geolocator.requestPermission();
-      print("ERROR" + error.toString());
-    });
-    return await Geolocator.getCurrentPosition();
-  }
+ Future<void> getUserCurrentLocation()  async {
+    Position position = await _determinePosition();
 
+    mapcontroller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(position.latitude, position.longitude), zoom: 17)));
+
+    _markers.clear();
+droplat= position.latitude.toString();
+droplong= position.longitude.toString();
+print('droplatstart${droplat}');
+print('droplongstart${droplong}');
+    _markers.add(Marker(markerId: const MarkerId('currentLocation'),position: LatLng(position.latitude, position.longitude)));
+
+    setState(() {});
+  }
+  void _getLocation() async {
+
+
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.best);
+
+      setState(() {
+
+        _center = LatLng(position.latitude, position.longitude);
+
+        _handleTap;
+
+        cameraPosition = CameraPosition(
+          target: LatLng(double.parse(_latitude)  ,  double.parse(_longitude)),
+          zoom: 17,
+        );
+      });
+
+    } catch (e) {
+      print("Error: $e");
+    }
+    //getData();
+  }
   void _handleTap(LatLng tappedPoint) {
-    print(
-        'tappedPoint /// ${tappedPoint}'); // This prints the tapped point coordinates
+    print('tappedPoint /// ${tappedPoint}'); // This prints the tapped point coordinates
     // You can do further processing with the tapped coordinates here
     _center = LatLng(tappedPoint.latitude, tappedPoint.longitude);
     print('latlongInit /// ${tappedPoint.latitude + tappedPoint.latitude}');
 
-    getData();
     //_deliveryLocation.text = 'Delivery Location';
-  }
-
-  getLocation() async {
-    LocationPermission permission;
-    permission = await Geolocator.requestPermission();
-
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    double lat = position.latitude;
-    double long = position.longitude;
-
-    LatLng location = LatLng(lat, long);
-
-    setState(() => _currentPosition = position);
-    _getAddressFromLatLng(_currentPosition!);
-    _currentLocation = LatLng(location.latitude, location.longitude);
-    getData();
   }
 
 
@@ -1347,5 +1362,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
       return false;
     }
     return true;
+  }
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled');
+    }
+
+    permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+
+      if (permission == LocationPermission.denied) {
+        return Future.error("Location permission denied");
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('Location permissions are permanently denied');
+    }
+
+    Position position = await Geolocator.getCurrentPosition();
+
+    return position;
   }
 }

@@ -196,6 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
             preferences.setString("uid", response.data['result'][0]['uid']);
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
           }else{
+            DialogUtils.showCustomDialog(context, message: 'Please Enter Valid Details');
             print('Please Enter Valid Details');
           }
 

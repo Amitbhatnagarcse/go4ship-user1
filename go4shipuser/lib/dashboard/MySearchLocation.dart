@@ -22,6 +22,7 @@ class _MySearchLocationState extends State<MySearchLocation> {
       resizeToAvoidBottomInset: true,
       appBar: AppBar( title: Text('Search'),),
       body: SingleChildScrollView(
+
         child: SearchLocation(apiKey: 'AIzaSyDykH9xQyiVNxoaLIMQyIz7Nk--gOZD-8w',
           country: 'IN',
           language: 'en',

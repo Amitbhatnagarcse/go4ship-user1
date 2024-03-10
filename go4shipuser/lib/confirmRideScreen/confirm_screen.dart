@@ -170,13 +170,14 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                           color: Colors.green,
                         ),
                       ),
+
                       Text(
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16),
-                          ' Delivery'),
-                      Text(
+                          ' Delivery :- '),
+                      Flexible(child: Text(
                           style: TextStyle(fontSize: 16),
-                          ' :-   ${widget.headertext}'),
+                          '  ${widget.headertext}')),
                     ],
                   ),
                 ),
@@ -198,24 +199,17 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                                         showModalSheet(context);
                                       },
                                       child: Container(
-                                          width: 150,
-                                          height: 50,
-                                          decoration: BoxDecoration(
+
+                                        margin: EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                            color: Colors.orange,
                                             borderRadius:
-                                                BorderRadius.circular(50),
-                                            color: ColorConstants.AppColorDark,
-                                          ),
-                                          child: Container(
-                                            margin: EdgeInsets.all(5),
-                                            decoration: BoxDecoration(
-                                                color: Colors.orange,
-                                                borderRadius:
-                                                    BorderRadius.circular(5)),
-                                            height: 25,
-                                            child: Center(
-                                                child: Text(
-                                                    '${_changePackagetext.text}')),
-                                          )),
+                                                BorderRadius.circular(5)),
+                                        height: 50,
+                                        child: Center(
+                                            child: Text(
+                                                '${_changePackagetext.text}')),
+                                      ),
                                     ),
                                   ),
                                   Expanded(
@@ -225,7 +219,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                                         border:
                                             Border.all(color: Colors.orange)),
                                     margin: EdgeInsets.all(5),
-                                    height: 25,
+                                    height: 50,
                                     child: Center(
                                         child: Text(widget.VhecletypeName)),
                                   ))
@@ -675,7 +669,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         Text(
                           '  Choose Payment Option ',
@@ -685,7 +679,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                               color: Colors.blueAccent),
                         ),
                         SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         ListTile(
                           title: const Text('Wallet payment'),
@@ -745,7 +739,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                           ],
                         ),
                         SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         Text(
                           '  Balence is INR 0',
@@ -759,12 +753,12 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                         ),
                         Container(
                           width: double.infinity,
-                          height: 150,
+                          height: 180,
                           color: Colors.black12,
                           child: Column(
                             children: [
                               SizedBox(
-                                height: 20,
+                                height: 10,
                               ),
                               Text(
                                 ' Your wallet amount was too low. To user this \n payment method please add money to your wallet.',
@@ -774,7 +768,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                                     color: Colors.black),
                               ),
                               SizedBox(
-                                height: 20,
+                                height: 10,
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -857,7 +851,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                           height: 10,
                         ),
                         SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         Center(
                           child: GestureDetector(
@@ -881,7 +875,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                           ),
                         ),
                         SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                       ],
                     ),

@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:go4shipuser/splashscreen.dart';
 
+import 'current_location_screen.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

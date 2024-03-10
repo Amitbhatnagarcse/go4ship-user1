@@ -35,7 +35,10 @@ class _MyBookingState extends State<MyBooking> {
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title: Text('My Bookings'),
+          title: Text('My Bookings', style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.black),),
           backgroundColor: ColorConstants.AppColorDark),
       body: GestureDetector(
           onTap: () {},
@@ -145,7 +148,7 @@ class _MyBookingState extends State<MyBooking> {
                     rideList_list[index]['ride_date'],
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 16,
                         color: Colors.black),
                   ),
                   Text(
@@ -169,7 +172,7 @@ class _MyBookingState extends State<MyBooking> {
                                                 : '',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: 16,
                       color: rideList_list[index]['ride_status'] == '2'
                           ? Colors.green
                           : rideList_list[index]['ride_status'] == '1'
@@ -211,14 +214,14 @@ class _MyBookingState extends State<MyBooking> {
                     rideList_list[index]['cabtype'] + ' :- ',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 16,
                         color: Colors.grey),
                   ),
                   Text(
                     rideList_list[index]['ride_id'],
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 16,
                         color: Colors.grey),
                   ),
                   SizedBox(
@@ -278,7 +281,7 @@ class _MyBookingState extends State<MyBooking> {
                             rideList_list[index]['count'] + ' locations',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                                fontSize: 16,
                                 color: Colors.black),
                           ),
                         ],
@@ -286,7 +289,7 @@ class _MyBookingState extends State<MyBooking> {
                     ],
                   ),
                   Image.network(rideList_list[index]['profile_url'],
-                      width: 80, height: 60, fit: BoxFit.fill),
+                      width: 40, height: 40, fit: BoxFit.fill),
                 ],
               ),
               SizedBox(
@@ -300,14 +303,14 @@ class _MyBookingState extends State<MyBooking> {
                         rideList_list[index]['estimate_amount'].toString(),
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 16,
                         color: Colors.green),
                   ),
                   Text(
                     'OTP ' + rideList_list[index]['otp'].toString() + '  ',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 16,
                         color: Colors.red),
                   ),
                 ],

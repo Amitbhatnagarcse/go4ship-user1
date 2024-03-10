@@ -20,8 +20,8 @@ class CategoryIcons extends StatelessWidget {
       child: Column(children: [
 
         Container(
-            height: 100,
-            width: 110,
+            height: 80,
+            width: 100,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(13),
               color: iconColor,
