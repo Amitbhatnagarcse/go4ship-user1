@@ -285,7 +285,6 @@ class _WalletScreenState extends State<WalletScreen> {
             title: Text(message),
             actions: <Widget>[
             Container(
-
               child: Column(
 
               children: [
