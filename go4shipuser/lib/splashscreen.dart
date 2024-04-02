@@ -44,9 +44,9 @@ class FadeIn extends State<SplashScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children:[
               //_fade(),
-              _rotate(),
+             // _rotate(),
               SizedBox(height: 20,),
-              Image.asset(height: 200,width: 200,'assets/images/applogo.png')
+              Image.asset(height: 200,width: 200,'assets/images/go4ship_logo.png')
 
 
               /* AnimatedAlign(

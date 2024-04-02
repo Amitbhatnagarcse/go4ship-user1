@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,13 +54,32 @@ class _MyBookingDetailState extends State<MyBookingDetail> {
   var rateTV;
   late String droplat;
   late String droplongi;
-
+  bool cancelride=false;
+  bool trackride=false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
     getData();
+if(widget.ride_status=='3'){
+  cancelride = false;
+  trackride = false;
+}else if(widget.ride_status=='2'){
+  cancelride = false;
+  trackride = false;
+}else if(widget.ride_status=='1'){
+  cancelride = false;
+  trackride = false;
+}else if(widget.ride_status=='0'){
+  cancelride = true;
+  trackride = false;
+}else if(widget.ride_status=='4'||widget.ride_status=='5'||widget.ride_status=='6'){
+  cancelride = false;
+  trackride = true;
+}
+
+
   }
 
   @override
@@ -280,7 +300,7 @@ class _MyBookingDetailState extends State<MyBookingDetail> {
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
-                              color: Colors.white),
+                              color: trackride==true?Colors.white:Colors.grey.shade300),
                         )
                       ],
                     )),
@@ -288,25 +308,34 @@ class _MyBookingDetailState extends State<MyBookingDetail> {
                       width: 1,
                       color: Colors.white,
                     ),
-                    Expanded(
-                        child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                            width: 40,
-                            height: 40,
-                            'assets/images/cancelwhite.png'),
-                        Text(
-                          'CANCEL',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13,
-                              color: Colors.white),
-                        )
-                      ],
-                    )),
+
+
+                    GestureDetector(
+
+                      onTap: (){
+                        cancelride==true?
+                        cancelRide() : null;
+                      },
+                      child:   Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                  width: 40,
+                                  height: 40,
+                                  'assets/images/cancelwhite.png'),
+                              Text(
+                                'CANCEL',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                    color: cancelride==true?Colors.white:Colors.grey.shade300),
+                              )
+                            ],
+                          )),
+                    ),
                     VerticalDivider(
                       width: 1,
                       color: Colors.white,
@@ -423,6 +452,63 @@ class _MyBookingDetailState extends State<MyBookingDetail> {
 
   void _onMapCreated(GoogleMapController controller) {
     myController = controller;
+  }
+  void cancelRide() async {
+    print('cancel ride${widget.ride_id}');
+    preferences = await SharedPreferences.getInstance();
+
+    try {
+      FormData formData = FormData.fromMap({
+
+        AppConstants.Ride_id: widget.ride_id,
+
+
+      });
+      //response = await dio.post("/info", data: formData);
+      // print(“Response FormData :: ${formData}”);
+
+      var response =
+      await Dio().post(AppConstants.app_base_url + AppConstants.CancelRide_URL,data: formData);
+      if (response.statusCode == 200) {
+        setState(() {
+          //print('print lenth${response.data['result'][0]['cabtypes']}');
+          //cablist = response.data['result'][0]['cabtypes'] as List;
+
+          var resut= response.data['result'][0]['Result'];
+          print('print response${response.data['result'][0]['Result']}');
+          if(response.data['result'][0]['Result'] == 'Ride cancelled successfully'){
+            Fluttertoast.showToast(
+                msg: 'Ride cancelled successfully',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.green,
+                textColor: Colors.white);
+            Navigator.pop(context);
+          }else{
+            Fluttertoast.showToast(
+                msg: 'Something went Wrong',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.red,
+                textColor: Colors.white);
+          }
+          /* if(resut=='Login success'){
+            preferences.setString("userid", response.data['result'][0]['userid']);
+            preferences.setString("uid", response.data['result'][0]['uid']);
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+          }else{
+            print('Please Enter Valid Details');
+          }*/
+
+
+          // var recordsList = response.data["cabtype"];
+          // print('print cabtype......................${response.data['cabtypes']}');
+        });
+      }
+      // print(response);
+    } catch (e) {
+      print(e);
+    }
   }
 
   void getData() async {

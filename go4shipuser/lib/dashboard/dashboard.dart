@@ -13,13 +13,16 @@ import 'package:go4shipuser/constant/AppColor.dart';
 import 'package:go4shipuser/dashboard/Model/CabListModel.dart';
 import 'package:go4shipuser/dashboard/MySearchLocation.dart';
 import 'package:go4shipuser/ratecard/ratecard.dart';
+import 'package:go4shipuser/splashscreen.dart';
 import 'package:go4shipuser/support/support.dart';
 import 'package:go4shipuser/walletscreen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
 import 'package:search_map_location/search_map_location.dart';
+import 'package:search_map_location/utils/google_search/place.dart';
 
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constant/AppUrl.dart';
 import '../mybooking/MyBooking.dart';
 import '../profile/myprofile.dart';
@@ -247,7 +250,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ListTile(
                       leading: Icon(Icons.logout, color: ColorConstants.black),
                       title: Text('Logout'),
-                      onTap: () {
+                      onTap: () async {
+                        SharedPreferences preferences = await SharedPreferences.getInstance();
+                        await preferences.clear();
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SplashScreen()));
                         // Navigator.pop(context); // Close the drawer
 
                         // Add navigation logic here
@@ -269,17 +278,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: <Widget>[
             GestureDetector(
               child:
-
-                  /*_center == null
-          ? Center(child: CircularProgressIndicator())
-          : GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: _center,
-                zoom: 15.0,
-              ),
-            ),
-    );*/
               GoogleMap(
                 myLocationButtonEnabled: false,
                 zoomControlsEnabled: false,
@@ -413,31 +411,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       height: 50,
                       child: Row(
                         children: [
-                          Expanded(
-                              child: Align(
+                          Align(
                             alignment: Alignment.centerLeft,
                             child: Container(
-                              margin: EdgeInsets.only(left: 10),
-                              child: Image.asset(
-                                  height: 25, 'assets/images/tarck_others.png'),
-                            ),
-                          )),
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(_deliveryLocation.text),
-                              // child: Text(_deliveryLocation.text),
+                          margin: EdgeInsets.only(left: 10),
+                          child: Image.asset(
+                              height: 25, 'assets/images/tarck_others.png'),
                             ),
                           ),
                           Expanded(
-                              child: Align(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Flexible(
+                                child:  Text(_deliveryLocation.text),
+                              ),
+                              // child: Text(_deliveryLocation.text),
+                            ),
+                          ),
+                          Align(
                             alignment: Alignment.centerRight,
                             child: Container(
-                              margin: EdgeInsets.only(right: 10),
-                              child: Image.asset(
-                                  height: 20, 'assets/images/map_location.png'),
+                          margin: EdgeInsets.only(right: 10),
+                          child: Image.asset(
+                              height: 20, 'assets/images/map_location.png'),
                             ),
-                          )),
+                          ),
                         ],
                       )),
                 ),
@@ -581,6 +579,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                 _deliveryLocation.text,
                                             pickuplat_list: pickuplat_list,
                                             pickuplong_list: pickuplong_list,
+                                        ride_id: '',
                                           )));
                             }
                           },
@@ -1392,4 +1391,6 @@ print('droplongstart${droplong}');
 
     return position;
   }
+
+
 }

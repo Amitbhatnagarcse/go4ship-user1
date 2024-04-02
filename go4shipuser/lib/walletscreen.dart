@@ -277,6 +277,7 @@ class _WalletScreenState extends State<WalletScreen> {
 
 
   static void showCustomDialog(BuildContext context, {required String message, String okBtnText = "Ok",}) {
+    TextEditingController _amountWallet = TextEditingController();
     showDialog(
         context: context,
         builder: (_) {
@@ -323,6 +324,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       Text('Enter Amount'),
 
                       TextField(
+                        controller: _amountWallet,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
@@ -338,15 +340,16 @@ class _WalletScreenState extends State<WalletScreen> {
                   onTap: (){
                     Razorpay razorpay = Razorpay();
                     var options = {
-                      'key': 'rzp_test_1DP5mmOlF5G5ag',
-                      'amount': 100,
-                      'name': 'Acme Corp.',
-                      'description': 'Fine T-Shirt',
+                      'key': 'rzp_live_08MQK60JKMyepO',
+                      'amount': _amountWallet.text.toString().trim()+'00',
+                      'image':"https://s3.amazonaws.com/rzp-mobile/images/rzp.png",
+                      'name': 'Go4Ship',
+                      'description': '',
                       'retry': {'enabled': true, 'max_count': 1},
                       'send_sms_hash': true,
                       'prefill': {
-                        'contact': '8888888888',
-                        'email': 'test@razorpay.com'
+                        'contact': '7230882255',
+                        'email': 'accounts@go4ship.com'
                       },
                       'external': {
                         'wallets': ['paytm']

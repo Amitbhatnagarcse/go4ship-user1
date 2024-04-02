@@ -14,10 +14,9 @@ class AppConstants {
   static const MyRides_URL = "myrides.php";
   static const MyRidesDetails_URL = "ridedetails.php";
   static const Booking_URL = "booking.php";
+  static const CancelRide_URL = "cancel_ride.php";
 
   //static const MyRides_URL = "myrides.php";
-
-
 
 
   static const UMAIL = "email";
@@ -50,5 +49,6 @@ class AppConstants {
   static const UserId = "userid";
   static const ReferralCode = "referral_code";
   static const Rideid = "rideid";
+  static const Ride_id = "ride_id";
 
 }

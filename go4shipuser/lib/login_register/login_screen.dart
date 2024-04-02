@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   Center(
                     child: Image.asset(
-                        width: 100, height: 100, 'assets/images/applogo.png'),
+                        width: 80, height: 80, 'assets/images/go4ship_logo.png'),
                   ),
                   Text(
                       style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold, fontSize: 20),

@@ -20,6 +20,7 @@ class ConfirmScreen extends StatefulWidget {
   final String droplocation;
   final String droplat;
   final String droplong;
+  final String ride_id;
 
   final List locationAddlist;
   final List pickuplat_list;
@@ -34,6 +35,7 @@ class ConfirmScreen extends StatefulWidget {
     required this.droplocation,
     required this.droplat,
     required this.droplong,
+    required this.ride_id,
     required this.locationAddlist,
     required this.pickuplat_list,
     required this.pickuplong_list,
@@ -503,6 +505,64 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
       return packagelist.length;
     } else {
       return 0;
+    }
+  }
+
+
+  void cancelRide() async {
+    preferences = await SharedPreferences.getInstance();
+
+    try {
+      FormData formData = FormData.fromMap({
+
+        AppConstants.Rideid: widget.ride_id,
+
+
+      });
+      //response = await dio.post("/info", data: formData);
+      // print(“Response FormData :: ${formData}”);
+
+      var response =
+      await Dio().post(AppConstants.app_base_url + AppConstants.CancelRide_URL,data: formData);
+      if (response.statusCode == 200) {
+        setState(() {
+          //print('print lenth${response.data['result'][0]['cabtypes']}');
+          //cablist = response.data['result'][0]['cabtypes'] as List;
+
+          var resut= response.data['result'][0]['Result'];
+          print('print response${response.data['result'][0]['Result']}');
+          if(response.data['result'][0]['Result'] == 'Ride cancelled successfully'){
+            Fluttertoast.showToast(
+                msg: 'Ride cancelled successfully',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.green,
+                textColor: Colors.white);
+            Navigator.pop(context);
+          }else{
+            Fluttertoast.showToast(
+                msg: 'Something went Wrong',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.red,
+                textColor: Colors.white);
+          }
+          /* if(resut=='Login success'){
+            preferences.setString("userid", response.data['result'][0]['userid']);
+            preferences.setString("uid", response.data['result'][0]['uid']);
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+          }else{
+            print('Please Enter Valid Details');
+          }*/
+
+
+          // var recordsList = response.data["cabtype"];
+          // print('print cabtype......................${response.data['cabtypes']}');
+        });
+      }
+      // print(response);
+    } catch (e) {
+      print(e);
     }
   }
 

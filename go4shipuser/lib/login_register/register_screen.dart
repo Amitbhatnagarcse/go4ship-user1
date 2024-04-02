@@ -60,7 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 children: [
                   Center(
                     child: Image.asset(
-                        width: 100, height: 100, 'assets/images/applogo.png'),
+                        width: 80, height: 80, 'assets/images/go4ship_logo.png'),
                   ),
                   Text(
                       style: TextStyle(color:Colors.white,fontWeight: FontWeight.bold, fontSize: 20),
@@ -93,7 +93,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 10,top: 0,right: 10,bottom: 20),
                         child: GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+
+
+                          },
                           child: Container(
                             width: 150,
                             height: 50,
