@@ -422,9 +422,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Expanded(
                             child: Align(
                               alignment: Alignment.center,
-                              child: Flexible(
-                                child:  Text(_deliveryLocation.text),
-                              ),
+                              child: Text(_deliveryLocation.text),
                               // child: Text(_deliveryLocation.text),
                             ),
                           ),
@@ -852,7 +850,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       //get place name from lat and lang
       location1 = placemarks.first.administrativeArea.toString() +
           ", " + placemarks.first.subLocality.toString();
-print('placemarks${placemarks.toString()}');
+       print('placemarks${placemarks.toString()}');
       _currentAddress = '${placemarks.first.locality}, ${placemarks.first.subLocality}, ${placemarks.first.subAdministrativeArea}, ${placemarks.first.postalCode}';
       _deliveryLocation.text = _currentAddress.toString();
       _getLocation();
@@ -1140,16 +1138,15 @@ print('placemarks${placemarks.toString()}');
               SizedBox(
                 width: 10,
               ),
-              Expanded(
-                  child: Text(
-                locationAddlist[index],
+              Text(
+                locationAddlist[index].toString(),
                 maxLines: 1,
                 style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                    fontWeight: FontWeight.normal),
-              )),
-              GestureDetector(
+                fontSize: 16,
+                color: Colors.black,
+                fontWeight: FontWeight.normal),
+              ),
+              locationAddlist.length>0?GestureDetector(
                 onTap: () {
                   setState(() {
                     print('lenthremove}');
@@ -1158,16 +1155,15 @@ print('placemarks${placemarks.toString()}');
                     pickuplong_list.removeAt(index);
                   });
                 },
-                child: Expanded(
-                    child: Align(
+                child: Align(
                   alignment: Alignment.centerRight,
                   child: Container(
-                    margin: EdgeInsets.only(right: 10),
-                    child: Image.asset(
-                        width: 16, height: 16, 'assets/images/cancel.png'),
+                margin: EdgeInsets.only(right: 10),
+                child: Image.asset(
+                    width: 16, height: 16, 'assets/images/cancel.png'),
                   ),
-                )),
-              )
+                ),
+              ):Container()
             ],
           ),
         ),
