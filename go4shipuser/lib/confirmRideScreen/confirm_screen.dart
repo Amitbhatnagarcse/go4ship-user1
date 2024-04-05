@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../constant/AppColor.dart';
 import '../constant/AppUrl.dart';
 import '../constant/DialogUtils.dart';
+import '../walletscreen.dart';
 
 class ConfirmScreen extends StatefulWidget {
   final String cabid;
@@ -271,6 +272,9 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
+
+
+
                                 getBooking();
                               },
                               child: Align(
@@ -606,19 +610,24 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
           data: formData);
       if (response.statusCode == 200) {
         setState(() {
+          //{result: [{Result: No money, ride_id: , status: 0, msg: Insufficient balance in your wallet! please add  money in your wallet.}]}
           print('print response   ${response.data.toString()}');
           var resut = response.data['result'][0]['Result'];
           print('print response${resut.toString()}');
           if (resut != null) {
+            if(response.data['result'][0]['status'].toString() == '0'){
+              showCustomDialog(context, message: response.data['result'][0]['msg'].toString(), status: response.data['result'][0]['status'].toString());
+
+            }
             print('print response${resut.toString()}');
             // print('responcedata////  ${response.data['result']}');
+          }else{
+            showCustomDialog(context,
+                message: response.data['result'][0]['msg'].toString(), status:  response.data['result'][0]['status'].toString());
           }
 
           // var resut = response.data['result'][0]['Result'];
 
-          showCustomDialog(context,
-              message:
-                  'Your booking request sent successfully. Any of our driver will accept your ride immediately. Thank you.');
 
          // Navigator.pop(context);
           // print('print cabtype......................${response.data['cabtypes']}');
@@ -629,7 +638,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
       print(e);
     }
   }
-  static void showCustomDialog(BuildContext context, {required String message, String okBtnText = "Ok",}) {
+  static void showCustomDialog(BuildContext context, {required String message,required String status, String okBtnText = "Ok",}) {
     showDialog(
         context: context,
         builder: (_) {
@@ -638,8 +647,16 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  if(status == '0'){
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WalletScreen()));
+                  }else{
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  }
                 },
                 child: Text(okBtnText),
                 //  onPressed: okBtnFunction,
